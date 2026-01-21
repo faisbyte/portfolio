@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-type Link = { label: string; href: string };
+type Link = { label: string; href: string; external?: boolean };
 
 const PROFILE = {
   name: "Faisal Naveed",
@@ -60,7 +60,7 @@ const SKILLS = {
 };
 
 function Container({ children }: { children: React.ReactNode }) {
-  return <div className="mx-auto w-full max-w-4xl px-6 sm:px-10">{children}</div>;
+  return <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">{children}</div>;
 }
 
 function Section({
@@ -75,19 +75,22 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section id={id} className="py-14">
-      <div className="mb-6">
-        <h2 className="text-2xl font-semibold tracking-tight">{title}</h2>
-        {subtitle ? <p className="mt-2 text-sm text-black/80">{subtitle}</p> : null}
+    <section id={id} className="py-16 lg:py-24">
+      <div className="mb-10 lg:mb-16">
+        <div className="inline-block mb-3">
+          <h2 className="text-3xl font-extrabold tracking-tight lg:text-4xl xl:text-5xl">{title}</h2>
+          <div className="h-1 w-16 bg-gradient-to-r from-transparent via-black/30 to-transparent rounded-full mt-2"></div>
+        </div>
+        {subtitle ? <p className="text-sm text-black/65 mt-4 lg:text-base lg:max-w-2xl">{subtitle}</p> : null}
       </div>
       {children}
     </section>
   );
 }
 
-function Card({ children }: { children: React.ReactNode }) {
+function Card({ children, className = "", featured = false }: { children: React.ReactNode; className?: string; featured?: boolean }) {
   return (
-    <div className="rounded-2xl border border-black/10 bg-white/28 backdrop-blur-md p-5 shadow-sm">
+    <div className={`group rounded-2xl border border-black/12 bg-white/30 backdrop-blur-lg p-6 lg:p-8 shadow-sm transition-all duration-500 hover:shadow-xl hover:bg-white/40 hover:-translate-y-1 ${featured ? 'ring-2 ring-black/5' : ''} ${className}`}>
       {children}
     </div>
   );
@@ -98,13 +101,13 @@ function Pill({ children }: { children: React.ReactNode }) {
     <span
       className="
         inline-flex items-center
-        rounded-full px-4 py-2
-        text-sm font-medium
-        border border-black/10
-        bg-white/35 backdrop-blur-md shadow-sm
+        rounded-full px-4 py-1.5
+        text-xs font-medium
+        border border-black/12
+        bg-white/35 backdrop-blur-md
         text-black
-        transition-colors
-        hover:bg-black hover:text-white
+        transition-all duration-300
+        hover:bg-black hover:text-white hover:scale-105
       "
     >
       {children}
@@ -137,8 +140,11 @@ function IconPaper() {
 }
 
 export default function Home() {
-  // keep the “tie dye flows as you scroll” effect
+  // Original scroll-driven gradient flow effect
   useEffect(() => {
+    // Only run on client side after hydration
+    if (typeof window === 'undefined') return;
+
     const root = document.documentElement;
     let ticking = false;
 
@@ -159,10 +165,20 @@ export default function Home() {
       }
     };
 
-    setVars();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    // Delay initial set to ensure hydration is complete
+    const timeoutId = setTimeout(() => {
+      setVars();
+      window.addEventListener("scroll", onScroll, { passive: true });
+    }, 0);
+
+    return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
+
+  // TODO: Update the resume file path below when you have the file ready
+  const RESUME_PATH = "/resume.pdf"; // Update this path with your actual resume file path
 
   const nav = [
     { label: "Experience", href: "#experience" },
@@ -170,22 +186,27 @@ export default function Home() {
     { label: "Technologies", href: "#technologies" },
     { label: "Certifications", href: "#certifications" },
     { label: "Volunteering", href: "#volunteering" },
+    { label: "Resume", href: RESUME_PATH, external: true },
   ];
 
   const navBtn =
-    "rounded-full px-6 py-3 text-base font-medium border border-black/10 bg-white/35 backdrop-blur-md shadow-sm text-black transition-colors hover:bg-black hover:text-white";
-  const iconBtn =
-    "grid h-12 w-12 place-items-center rounded-2xl border border-black/10 bg-white/35 backdrop-blur-md shadow-sm text-black transition-colors hover:bg-black hover:text-white";
+    "relative rounded-full px-5 py-2.5 text-sm font-medium tracking-wide border border-black/10 bg-white/35 backdrop-blur-md shadow-sm text-black transition-all duration-300 hover:bg-black hover:text-white hover:scale-105 hover:shadow-md active:scale-95";
+
 
   return (
     <div className="min-h-screen">
-      {/* Centered “liquid glass” nav */}
-      <div className="sticky top-0 z-50">
+      {/* Modern floating navigation */}
+      <div className="sticky top-4 z-50 mt-4 lg:top-6">
         <Container>
-          <div className="flex items-center justify-center py-4">
-            <nav className="flex flex-wrap items-center justify-center gap-3">
+          <div className="flex items-center justify-center">
+            <nav className="flex flex-wrap items-center justify-center gap-2.5 lg:gap-3 rounded-full px-4 py-3 border border-black/10 bg-white/30 backdrop-blur-xl shadow-lg">
               {nav.map((item) => (
-                <a key={item.href} href={item.href} className={navBtn}>
+                <a 
+                  key={item.href} 
+                  href={item.href} 
+                  className={navBtn}
+                  {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                >
                   {item.label}
                 </a>
               ))}
@@ -194,65 +215,38 @@ export default function Home() {
         </Container>
       </div>
 
-      {/* Clean hero (less content on load) */}
+      {/* Refined hero section */}
       <Container>
-        <div className="min-h-[72vh] flex flex-col items-center justify-center text-center gap-6">
-          <h1 className="text-6xl font-semibold tracking-tight sm:text-7xl">
-            {PROFILE.name}
-          </h1>
-
-          <div className="flex items-center justify-center gap-4">
-            <a
-              href={PROFILE.links.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="LinkedIn"
-              className={iconBtn}
-            >
-              <IconLinkedIn />
-            </a>
-            <a
-              href={PROFILE.links.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="GitHub"
-              className={iconBtn}
-            >
-              <IconGitHub />
-            </a>
-            <a
-              href={PROFILE.links.resume}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Resume"
-              className={iconBtn}
-            >
-              <IconPaper />
-            </a>
+        <div className="min-h-[80vh] flex flex-col items-center justify-center text-center gap-8 lg:gap-12">
+          <div className="space-y-6">
+            <h1 className="text-5xl font-extrabold tracking-tight sm:text-6xl lg:text-7xl xl:text-8xl bg-clip-text">
+              {PROFILE.name}
+            </h1>
+            <p className="text-sm text-black/60 font-medium tracking-widest uppercase lg:text-base">Portfolio</p>
           </div>
         </div>
       </Container>
 
-      {/* Reordered sections */}
+      {/* Redesigned content sections */}
       <Container>
         <Section
           id="experience"
           title="Experience"
           subtitle="Roles where I shipped real systems and owned deliverables."
         >
-          <div className="grid gap-4">
-            {EXPERIENCE.map((x) => (
-              <Card key={x.title + x.org}>
-                <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-                  <div>
-                    <div className="text-base font-semibold">{x.title}</div>
-                    <div className="text-sm text-black/80">{x.org}</div>
+          <div className="space-y-6">
+            {EXPERIENCE.map((x, idx) => (
+              <Card key={x.title + x.org} featured={idx === 0}>
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="flex-1 space-y-1">
+                    <h3 className="text-lg font-bold lg:text-xl">{x.title}</h3>
+                    <p className="text-sm text-black/70 lg:text-base">{x.org}</p>
                   </div>
-                  <div className="text-sm text-black/80">{x.period}</div>
+                  <div className="text-xs font-medium text-black/60 lg:text-sm whitespace-nowrap">{x.period}</div>
                 </div>
-                <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-black/80">
+                <ul className="mt-5 space-y-2 list-disc pl-5 text-sm text-black/70 lg:text-base lg:space-y-2.5">
                   {x.bullets.map((b) => (
-                    <li key={b}>{b}</li>
+                    <li key={b} className="leading-relaxed">{b}</li>
                   ))}
                 </ul>
               </Card>
@@ -263,21 +257,19 @@ export default function Home() {
         <Section
           id="education"
           title="Education"
-          subtitle="Where I studied and what I’m currently focused on."
+          subtitle="Where I studied and what I'm currently focused on."
         >
-          <div className="grid gap-4">
+          <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
             {EDUCATION.map((e) => (
               <Card key={e.title}>
-                <div className="flex
-                  flex-col gap-2 sm:flex-row sm:items-start sm:justify-between"
-                >
-                  <div>
-                    <div className="text-base font-semibold">{e.title}</div>
-                    <div className="text-sm text-black/80">{e.org}</div>
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between mb-5">
+                  <div className="flex-1 space-y-1">
+                    <h3 className="text-lg font-bold lg:text-xl">{e.title}</h3>
+                    <p className="text-sm text-black/70 lg:text-base">{e.org}</p>
                   </div>
-                  <div className="text-sm text-black/80">{e.period}</div>
+                  <div className="text-xs font-medium text-black/60 lg:text-sm whitespace-nowrap">{e.period}</div>
                 </div>
-                <div className="mt-3">
+                <div>
                   <Pill>{e.highlight}</Pill>
                 </div>
               </Card>
@@ -288,13 +280,13 @@ export default function Home() {
         <Section
           id="technologies"
           title="Technologies"
-          subtitle="Languages, frameworks, and tools I’ve used."
+          subtitle="Languages, frameworks, and tools I've used."
         >
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
             {Object.entries(SKILLS).map(([k, items]) => (
-              <Card key={k}>
-                <div className="text-sm font-semibold">{k}</div>
-                <div className="mt-3 flex flex-wrap gap-2">
+              <Card key={k} className="h-full flex flex-col">
+                <h3 className="text-base font-bold mb-4 lg:text-lg">{k}</h3>
+                <div className="flex flex-wrap gap-2 mt-auto">
                   {items.map((s) => (
                     <Pill key={s}>{s}</Pill>
                   ))}
@@ -309,11 +301,11 @@ export default function Home() {
           title="Certifications"
           subtitle="Credentials and programs completed."
         >
-          <div className="grid gap-4">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
             {CERTIFICATIONS.map((c) => (
               <Card key={c.title}>
-                <div className="text-base font-semibold">{c.title}</div>
-                <div className="mt-1 text-sm text-black/80">{c.meta}</div>
+                <h3 className="text-base font-bold mb-2 lg:text-lg">{c.title}</h3>
+                <p className="text-xs text-black/65 lg:text-sm">{c.meta}</p>
               </Card>
             ))}
           </div>
@@ -324,15 +316,15 @@ export default function Home() {
           title="Volunteering"
           subtitle="Community involvement and volunteer work."
         >
-          <div className="grid gap-4">
+          <div className="max-w-2xl">
             <Card>
-              <div className="text-base font-semibold">Coming soon</div>
-              <div className="mt-1 text-sm text-black/80">Volunteering experiences will be added here.</div>
+              <h3 className="text-base font-bold mb-2 lg:text-lg">Coming soon</h3>
+              <p className="text-sm text-black/65 lg:text-base">Volunteering experiences will be added here.</p>
             </Card>
           </div>
         </Section>
 
-        <footer className="py-12 text-center text-sm text-black/70">
+        <footer className="py-12 text-center text-xs text-black/50 lg:text-sm lg:py-16">
           © {new Date().getFullYear()} {PROFILE.name}
         </footer>
       </Container>
