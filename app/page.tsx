@@ -169,6 +169,7 @@ export default function Home() {
     { label: "Education", href: "#education" },
     { label: "Technologies", href: "#technologies" },
     { label: "Certifications", href: "#certifications" },
+    { label: "Volunteering", href: "#volunteering" },
   ];
 
   const navBtn =
@@ -315,6 +316,19 @@ export default function Home() {
                 <div className="mt-1 text-sm text-black/80">{c.meta}</div>
               </Card>
             ))}
+          </div>
+        </Section>
+
+        <Section
+          id="volunteering"
+          title="Volunteering"
+          subtitle="Community involvement and volunteer work."
+        >
+          <div className="grid gap-4">
+            <Card>
+              <div className="text-base font-semibold">Coming soon</div>
+              <div className="mt-1 text-sm text-black/80">Volunteering experiences will be added here.</div>
+            </Card>
           </div>
         </Section>
 

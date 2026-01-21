@@ -23,3 +23,11 @@ export default function RootLayout({
     </html>
   );
 }
+
+export const metadata: Metadata = {
+  icons: {
+    icon: "/pic.png",
+    shortcut: "/pic.png",
+    apple: "/pic.png",
+  },
+};
