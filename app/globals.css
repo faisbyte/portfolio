@@ -1,26 +1,65 @@
 @import "tailwindcss";
 
 :root {
+  /* Force black text everywhere */
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #000000;
+  --muted: #000000;
+
+  /* Let cards be slightly translucent so the dye shows through */
+  --card: rgba(255, 255, 255, 0.75);
+  --border: rgba(0, 0, 0, 0.14);
+
+  /* Scroll-driven offsets (JS updates these) */
+  --s1: 0px;
+  --s2: 0px;
+  --s3: 0px;
+  --s4: 0px;
+  --s5: 0px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  height: 100%;
 }
 
 body {
-  background: var(--background);
+  background: transparent; /* IMPORTANT: don’t hide the tie dye */
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Tie-dye layer behind everything */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -25%;
+  z-index: -1;
+  pointer-events: none;
+
+  /* dodgerblue = #1E90FF */
+  background:
+    radial-gradient(60vmax 60vmax at 15% 20%, rgba(30, 144, 255, 0.55) 0%, rgba(30, 144, 255, 0) 62%),
+    radial-gradient(55vmax 55vmax at 85% 15%, rgba(30, 144, 255, 0.45) 0%, rgba(30, 144, 255, 0) 60%),
+    radial-gradient(65vmax 65vmax at 25% 85%, rgba(30, 144, 255, 0.40) 0%, rgba(30, 144, 255, 0) 62%),
+    radial-gradient(50vmax 50vmax at 78% 82%, rgba(30, 144, 255, 0.35) 0%, rgba(30, 144, 255, 0) 62%),
+    radial-gradient(90vmax 90vmax at 50% 50%, rgba(30, 144, 255, 0.30) 0%, rgba(30, 144, 255, 0) 68%),
+    radial-gradient(140vmax 140vmax at 50% 50%, #ffffff 0%, #ffffff 45%, rgba(255, 255, 255, 0.92) 100%);
+
+  background-repeat: no-repeat;
+
+  /* Scroll-driven “flow” */
+  background-position:
+    calc(10% + var(--s3)) calc(15% + var(--s1)),
+    calc(90% + var(--s2)) calc(10% + var(--s4)),
+    calc(20% + var(--s1)) calc(90% + var(--s2)),
+    calc(85% + var(--s4)) calc(85% + var(--s3)),
+    50% calc(50% + var(--s5)),
+    center;
+
+  filter: saturate(120%) contrast(110%);
+  transform: translateZ(0);
+}
+
+::selection {
+  background: rgba(30, 144, 255, 0.25);
 }
