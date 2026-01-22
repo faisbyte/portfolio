@@ -208,35 +208,15 @@ function Card({
     <div className={`flex gap-6 lg:gap-8 ${image ? 'flex-row' : ''}`}>
       {image && (
         <div className="flex-shrink-0">
-          {link ? (
-            <a 
-              href={link} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="block"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <img 
-                src={image} 
-                alt={isMultivrse ? "Multivrse" : isEducation ? "University of Sydney" : "Company logo"} 
-                className={`object-contain rounded-lg ${
-                  isEducation 
-                    ? 'w-32 h-32 lg:w-40 lg:h-40' 
-                    : 'w-24 h-24 lg:w-32 lg:h-32'
-                }`}
-              />
-            </a>
-          ) : (
-            <img 
-              src={image} 
-              alt="Company logo" 
-              className={`object-contain rounded-lg ${
-                isEducation 
-                  ? 'w-32 h-32 lg:w-40 lg:h-40' 
-                  : 'w-24 h-24 lg:w-32 lg:h-32'
-              }`}
-            />
-          )}
+          <img 
+            src={image} 
+            alt={isMultivrse ? "Multivrse" : isEducation ? "University of Sydney" : "Company logo"} 
+            className={`object-contain rounded-lg ${
+              isEducation 
+                ? 'w-32 h-32 lg:w-40 lg:h-40' 
+                : 'w-24 h-24 lg:w-32 lg:h-32'
+            }`}
+          />
         </div>
       )}
       <div className="flex-1">
@@ -245,28 +225,45 @@ function Card({
     </div>
   );
 
-  return (
+  const cardClasses = `group rounded-2xl border border-black/12 ${isMultivrse || isAurm || isEducation ? '' : 'bg-white/30'} backdrop-blur-lg p-6 lg:p-10 shadow-sm transition-all duration-700 hover:shadow-xl hover:-translate-y-1 ${
+    featured ? 'ring-2 ring-black/5' : ''
+  } ${
+    isMultivrse 
+      ? 'multivrse-card' 
+      : isAurm
+      ? 'aurm-card'
+      : isEducation
+      ? 'education-card'
+      : 'hover:bg-white/40'
+  } ${
+    isVisible 
+      ? 'opacity-100 translate-y-0 scale-100' 
+      : 'opacity-0 translate-y-8 scale-95'
+  } ${link ? 'cursor-pointer' : ''} ${className}`;
+
+  const cardElement = (
     <div 
       ref={ref}
-      className={`group rounded-2xl border border-black/12 ${isMultivrse || isAurm || isEducation ? '' : 'bg-white/30'} backdrop-blur-lg p-6 lg:p-10 shadow-sm transition-all duration-700 hover:shadow-xl hover:-translate-y-1 ${
-        featured ? 'ring-2 ring-black/5' : ''
-      } ${
-        isMultivrse 
-          ? 'multivrse-card' 
-          : isAurm
-          ? 'aurm-card'
-          : isEducation
-          ? 'education-card'
-          : 'hover:bg-white/40'
-      } ${
-        isVisible 
-          ? 'opacity-100 translate-y-0 scale-100' 
-          : 'opacity-0 translate-y-8 scale-95'
-      } ${className}`}
+      className={cardClasses}
     >
       {cardContent}
     </div>
   );
+
+  if (link) {
+    return (
+      <a
+        href={link}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block no-underline"
+      >
+        {cardElement}
+      </a>
+    );
+  }
+
+  return cardElement;
 }
 
 function HeroSection() {
@@ -361,13 +358,13 @@ export default function Home() {
     let animationFrameId: number;
     let startTime = Date.now();
 
-    // Initialize random offsets for each gradient layer with moderate speeds
+    // Initialize random offsets for each gradient layer with faster, more visible speeds
     const offsets = {
-      s1: { base: Math.random() * 2, speed: 0.4 + Math.random() * 0.2, phase: Math.random() * Math.PI * 2 },
-      s2: { base: Math.random() * 2, speed: 0.35 + Math.random() * 0.2, phase: Math.random() * Math.PI * 2 },
-      s3: { base: Math.random() * 2, speed: 0.45 + Math.random() * 0.2, phase: Math.random() * Math.PI * 2 },
-      s4: { base: Math.random() * 2, speed: 0.38 + Math.random() * 0.2, phase: Math.random() * Math.PI * 2 },
-      s5: { base: Math.random() * 2, speed: 0.42 + Math.random() * 0.2, phase: Math.random() * Math.PI * 2 },
+      s1: { base: Math.random() * 3, speed: 0.6 + Math.random() * 0.3, phase: Math.random() * Math.PI * 2 },
+      s2: { base: Math.random() * 3, speed: 0.5 + Math.random() * 0.3, phase: Math.random() * Math.PI * 2 },
+      s3: { base: Math.random() * 3, speed: 0.7 + Math.random() * 0.3, phase: Math.random() * Math.PI * 2 },
+      s4: { base: Math.random() * 3, speed: 0.55 + Math.random() * 0.3, phase: Math.random() * Math.PI * 2 },
+      s5: { base: Math.random() * 3, speed: 0.65 + Math.random() * 0.3, phase: Math.random() * Math.PI * 2 },
     };
 
     const animate = () => {
@@ -375,10 +372,10 @@ export default function Home() {
       const vw = window.innerWidth / 100;
       const vh = window.innerHeight / 100;
 
-      // Pure time-based animation with moderate movement
-      // Using reasonable limits to prevent stretching while allowing visible movement
-      const maxOffset = 20; // Increased for more visible movement
-      const amplitude = 8; // Moderate amplitude for smooth movement
+      // Enhanced time-based animation with more visible movement
+      // Increased amplitude and speed for dynamic, cool-looking animation
+      const maxOffset = 25; // Increased for more visible movement
+      const amplitude = 12; // Increased amplitude for more dynamic movement
       
       const s1 = Math.max(-maxOffset, Math.min(maxOffset, (offsets.s1.base + Math.sin(elapsed * offsets.s1.speed + offsets.s1.phase) * amplitude) * vw));
       const s2 = Math.max(-maxOffset, Math.min(maxOffset, (offsets.s2.base + Math.sin(elapsed * offsets.s2.speed + offsets.s2.phase) * amplitude) * vw));
@@ -508,7 +505,7 @@ export default function Home() {
         <Section
           id="education"
           title="Education"
-          subtitle="Where I studied and what I'm currently focused on."
+          subtitle="Where I've studied and my academic achievements there."
         >
           <div className="space-y-6">
             {EDUCATION.map((e, idx) => (
@@ -571,12 +568,34 @@ export default function Home() {
         <Section
           id="volunteering"
           title="Volunteering"
-          subtitle="Community involvement and volunteer work."
+          subtitle="Clubs and Societies I've been a part of during my degree."
         >
-          <div className="max-w-2xl">
-            <Card index={0}>
-              <h3 className="text-base font-bold mb-2 lg:text-lg">Coming soon</h3>
-              <p className="text-sm text-white/80 lg:text-base">Volunteering experiences will be added here.</p>
+          <div className="space-y-6">
+            <Card 
+              index={0}
+              image="/suaia.jpeg"
+              link="https://www.suaia.org/"
+            >
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div className="flex-1 space-y-1">
+                  <h3 className="text-lg font-bold lg:text-xl transition-colors duration-700 text-white">Technology Executive & Secretary</h3>
+                  <p className="text-sm text-white/90 lg:text-base transition-colors duration-700">Sydney University Artificial Intelligence Association</p>
+                </div>
+                <div className="text-xs font-medium text-white/80 lg:text-sm whitespace-nowrap transition-colors duration-700 period">Nov 2024 - Present</div>
+              </div>
+            </Card>
+            <Card 
+              index={1}
+              image="/cybersoc.jpeg"
+              link="https://www.linkedin.com/company/usyd-csec/?originalSubdomain=au"
+            >
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div className="flex-1 space-y-1">
+                  <h3 className="text-lg font-bold lg:text-xl transition-colors duration-700 text-white">Subcommittee Member</h3>
+                  <p className="text-sm text-white/90 lg:text-base transition-colors duration-700">Sydney University Cyber Security Society</p>
+                </div>
+                <div className="text-xs font-medium text-white/80 lg:text-sm whitespace-nowrap transition-colors duration-700 period">June 2024 - Oct 2024</div>
+              </div>
             </Card>
           </div>
         </Section>
