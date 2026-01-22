@@ -1,14 +1,14 @@
 @import "tailwindcss";
 
 :root {
-  /* Force black text everywhere */
+  /* Force white text everywhere */
   --background: #ffffff;
-  --foreground: #000000;
-  --muted: #000000;
+  --foreground: #ffffff;
+  --muted: #ffffff;
 
   /* Let cards be slightly translucent so the dye shows through */
   --card: rgba(255, 255, 255, 0.75);
-  --border: rgba(0, 0, 0, 0.14);
+  --border: rgba(255, 255, 255, 0.2);
 
   /* Scroll-driven offsets (JS updates these) */
   --s1: 0px;
@@ -25,7 +25,29 @@ body {
 
 body {
   background: transparent; /* IMPORTANT: do not hide the tie dye */
-  color: var(--foreground);
+  color: white;
+}
+
+/* Ensure all text is white by default */
+* {
+  color: white;
+}
+
+/* Navigation buttons - text turns black on hover */
+.nav-container a,
+.nav-container a:visited {
+  color: white !important;
+}
+
+.nav-container a:hover,
+.nav-container a:focus {
+  color: black !important;
+}
+
+/* Override for specific elements that need different colors on hover */
+.multivrse-card:hover *,
+.aurm-card:hover * {
+  color: inherit;
 }
 
 /* Tie-dye layer behind everything */
@@ -107,5 +129,24 @@ body::before {
 .aurm-card:hover p,
 .aurm-card:hover li,
 .aurm-card:hover .period {
+  color: white !important;
+}
+
+/* Education card hover effect */
+.education-card {
+  background: rgba(255, 255, 255, 0.3) !important;
+  transition: background-color 0.7s ease, backdrop-filter 0.7s ease;
+}
+
+.education-card:hover {
+  background-color: #D55335 !important;
+  background: #D55335 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.education-card:hover h3,
+.education-card:hover p,
+.education-card:hover .period {
   color: white !important;
 }

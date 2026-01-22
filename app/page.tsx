@@ -16,10 +16,13 @@ const PROFILE = {
 
 const EDUCATION = [
   {
-    title: "Bachelor of Advanced Computing (Computational Data Science & BIS)",
+    title: "Bachelor of Advanced Computing (Honours)",
+    subtitle: "Computational Data Science & Business Information Systems",
     org: "The University of Sydney",
     period: "Jul 2023 - Jun 2027",
-    highlight: "WAM: 78",
+    image: "/usyd.svg",
+    link: "https://www.sydney.edu.au/",
+    isEducation: true,
   },
 ];
 
@@ -130,14 +133,14 @@ function Section({
             : 'opacity-0 -translate-x-4'
         }`}>
           <h2 className="text-3xl font-extrabold tracking-tight lg:text-4xl xl:text-5xl">{title}</h2>
-          <div className={`h-1 w-16 bg-gradient-to-r from-transparent via-black/30 to-transparent rounded-full mt-2 transition-all duration-700 delay-200 ${
+          <div className={`h-1 w-16 bg-gradient-to-r from-transparent via-white/50 to-transparent rounded-full mt-2 transition-all duration-700 delay-200 ${
             isVisible 
               ? 'opacity-100 scale-x-100' 
               : 'opacity-0 scale-x-0'
           }`}></div>
         </div>
         {subtitle ? (
-          <p className={`text-sm text-black/65 mt-4 lg:text-base lg:max-w-2xl transition-all duration-700 delay-150 ${
+          <p className={`text-sm text-white/80 mt-4 lg:text-base lg:max-w-2xl transition-all duration-700 delay-150 ${
             isVisible 
               ? 'opacity-100 translate-y-0' 
               : 'opacity-0 translate-y-4'
@@ -186,7 +189,8 @@ function Card({
   image = null,
   link = null,
   isMultivrse = false,
-  isAurm = false
+  isAurm = false,
+  isEducation = false
 }: { 
   children: React.ReactNode; 
   className?: string; 
@@ -196,6 +200,7 @@ function Card({
   link?: string | null;
   isMultivrse?: boolean;
   isAurm?: boolean;
+  isEducation?: boolean;
 }) {
   const { ref, isVisible } = useCardAnimation(index * 100);
 
@@ -213,15 +218,23 @@ function Card({
             >
               <img 
                 src={image} 
-                alt={isMultivrse ? "Multivrse" : "Company logo"} 
-                className="w-24 h-24 lg:w-32 lg:h-32 object-contain rounded-lg"
+                alt={isMultivrse ? "Multivrse" : isEducation ? "University of Sydney" : "Company logo"} 
+                className={`object-contain rounded-lg ${
+                  isEducation 
+                    ? 'w-32 h-32 lg:w-40 lg:h-40' 
+                    : 'w-24 h-24 lg:w-32 lg:h-32'
+                }`}
               />
             </a>
           ) : (
             <img 
               src={image} 
               alt="Company logo" 
-              className="w-24 h-24 lg:w-32 lg:h-32 object-contain rounded-lg"
+              className={`object-contain rounded-lg ${
+                isEducation 
+                  ? 'w-32 h-32 lg:w-40 lg:h-40' 
+                  : 'w-24 h-24 lg:w-32 lg:h-32'
+              }`}
             />
           )}
         </div>
@@ -235,13 +248,15 @@ function Card({
   return (
     <div 
       ref={ref}
-      className={`group rounded-2xl border border-black/12 ${isMultivrse || isAurm ? '' : 'bg-white/30'} backdrop-blur-lg p-6 lg:p-10 shadow-sm transition-all duration-700 hover:shadow-xl hover:-translate-y-1 ${
+      className={`group rounded-2xl border border-black/12 ${isMultivrse || isAurm || isEducation ? '' : 'bg-white/30'} backdrop-blur-lg p-6 lg:p-10 shadow-sm transition-all duration-700 hover:shadow-xl hover:-translate-y-1 ${
         featured ? 'ring-2 ring-black/5' : ''
       } ${
         isMultivrse 
           ? 'multivrse-card' 
           : isAurm
           ? 'aurm-card'
+          : isEducation
+          ? 'education-card'
           : 'hover:bg-white/40'
       } ${
         isVisible 
@@ -286,7 +301,7 @@ function HeroSection() {
           <h1 className="text-5xl font-extrabold tracking-tight sm:text-6xl lg:text-7xl xl:text-8xl bg-clip-text">
             {PROFILE.name}
           </h1>
-          <p className="text-sm text-black/60 font-medium tracking-widest uppercase lg:text-base">Portfolio</p>
+            <p className="text-sm text-white/80 font-medium tracking-widest uppercase lg:text-base">Portfolio</p>
         </div>
       </div>
     </Container>
@@ -302,7 +317,7 @@ function Pill({ children }: { children: React.ReactNode }) {
         text-xs font-medium
         border border-black/12
         bg-white/35 backdrop-blur-md
-        text-black
+        text-white
         transition-all duration-300
         hover:bg-black hover:text-white hover:scale-105
       "
@@ -403,7 +418,7 @@ export default function Home() {
   ];
 
   const navBtn =
-    "relative rounded-full px-5 py-2.5 text-sm font-medium tracking-wide border border-black/10 bg-white/35 backdrop-blur-md shadow-sm text-black transition-all duration-300 hover:bg-black hover:text-white hover:scale-105 hover:shadow-md active:scale-95";
+    "relative rounded-full px-5 py-2.5 text-sm font-medium tracking-wide border border-white/20 bg-white/35 backdrop-blur-md shadow-sm text-white transition-all duration-300 hover:bg-white hover:text-black hover:scale-105 hover:shadow-md active:scale-95";
 
 
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -436,7 +451,7 @@ export default function Home() {
       <div className="sticky top-4 z-50 mt-4 lg:top-6">
         <Container>
           <div className="flex items-center justify-center">
-            <nav className="flex flex-wrap items-center justify-center gap-2.5 lg:gap-3 rounded-full px-4 py-3 border border-black/10 bg-white/30 backdrop-blur-xl shadow-lg">
+            <nav className="flex flex-wrap items-center justify-center gap-2.5 lg:gap-3 rounded-full px-4 py-3 border border-black/10 bg-white/30 backdrop-blur-xl shadow-lg nav-container">
               {nav.map((item) => (
                 <a 
                   key={item.href} 
@@ -475,12 +490,12 @@ export default function Home() {
               >
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div className="flex-1 space-y-1">
-                    <h3 className="text-lg font-bold lg:text-xl transition-colors duration-700 text-black">{x.title}</h3>
-                    <p className="text-sm text-black/70 lg:text-base transition-colors duration-700">{x.org}</p>
+                    <h3 className="text-lg font-bold lg:text-xl transition-colors duration-700 text-white">{x.title}</h3>
+                    <p className="text-sm text-white/90 lg:text-base transition-colors duration-700">{x.org}</p>
                   </div>
-                  <div className={`text-xs font-medium text-black/60 lg:text-sm whitespace-nowrap transition-colors duration-700 period ${x.isMultivrse ? '' : ''}`}>{x.period}</div>
+                  <div className={`text-xs font-medium text-white/80 lg:text-sm whitespace-nowrap transition-colors duration-700 period ${x.isMultivrse ? '' : ''}`}>{x.period}</div>
                 </div>
-                <ul className="mt-5 space-y-2 list-disc pl-5 text-sm text-black/70 lg:text-base lg:space-y-2.5">
+                <ul className="mt-5 space-y-2 list-disc pl-5 text-sm text-white/90 lg:text-base lg:space-y-2.5">
                   {x.bullets.map((b) => (
                     <li key={b} className="leading-relaxed transition-colors duration-700">{b}</li>
                   ))}
@@ -495,18 +510,24 @@ export default function Home() {
           title="Education"
           subtitle="Where I studied and what I'm currently focused on."
         >
-          <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
+          <div className="space-y-6">
             {EDUCATION.map((e, idx) => (
-              <Card key={e.title} index={idx}>
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between mb-5">
+              <Card 
+                key={e.title} 
+                index={idx}
+                image={e.image || null}
+                link={e.link || null}
+                isEducation={e.isEducation || false}
+              >
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div className="flex-1 space-y-1">
-                    <h3 className="text-lg font-bold lg:text-xl">{e.title}</h3>
-                    <p className="text-sm text-black/70 lg:text-base">{e.org}</p>
+                    <h3 className="text-lg font-bold lg:text-xl transition-colors duration-700 text-white">{e.title}</h3>
+                    {e.subtitle && (
+                      <p className="text-sm text-white/80 lg:text-base transition-colors duration-700">{e.subtitle}</p>
+                    )}
+                    <p className="text-sm text-white/90 lg:text-base transition-colors duration-700">{e.org}</p>
                   </div>
-                  <div className="text-xs font-medium text-black/60 lg:text-sm whitespace-nowrap">{e.period}</div>
-                </div>
-                <div>
-                  <Pill>{e.highlight}</Pill>
+                  <div className="text-xs font-medium text-white/80 lg:text-sm whitespace-nowrap transition-colors duration-700 period">{e.period}</div>
                 </div>
               </Card>
             ))}
@@ -541,7 +562,7 @@ export default function Home() {
             {CERTIFICATIONS.map((c, idx) => (
               <Card key={c.title} index={idx}>
                 <h3 className="text-base font-bold mb-2 lg:text-lg">{c.title}</h3>
-                <p className="text-xs text-black/65 lg:text-sm">{c.meta}</p>
+                <p className="text-xs text-white/80 lg:text-sm">{c.meta}</p>
               </Card>
             ))}
           </div>
@@ -555,12 +576,12 @@ export default function Home() {
           <div className="max-w-2xl">
             <Card index={0}>
               <h3 className="text-base font-bold mb-2 lg:text-lg">Coming soon</h3>
-              <p className="text-sm text-black/65 lg:text-base">Volunteering experiences will be added here.</p>
+              <p className="text-sm text-white/80 lg:text-base">Volunteering experiences will be added here.</p>
             </Card>
           </div>
         </Section>
 
-        <footer className="py-12 text-center text-xs text-black/50 lg:text-sm lg:py-16">
+        <footer className="py-12 text-center text-xs text-white/60 lg:text-sm lg:py-16">
           © {new Date().getFullYear()} {PROFILE.name}
         </footer>
       </Container>
