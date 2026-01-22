@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Link = { label: string; href: string; external?: boolean };
 
@@ -18,7 +18,7 @@ const EDUCATION = [
   {
     title: "Bachelor of Advanced Computing (Computational Data Science & BIS)",
     org: "The University of Sydney",
-    period: "Jul 2023 – Jun 2027",
+    period: "Jul 2023 - Jun 2027",
     highlight: "WAM: 78",
   },
 ];
@@ -26,8 +26,11 @@ const EDUCATION = [
 const EXPERIENCE = [
   {
     title: "Business Development & Technology Solutions Design Lead",
-    org: "Multivrse (Sydney, NSW)",
-    period: "Oct 2025 – Present",
+    org: "Sydney, New South Wales, Australia",
+    period: "Oct 2025 - Present",
+    image: "/multirvrse.png",
+    link: "https://www.multivrse.digital/",
+    isMultivrse: true,
     bullets: [
       "Migrating organisation software from AWS to Akamai Linode",
       "Heading outreach and organising founding client meetings",
@@ -36,8 +39,12 @@ const EXPERIENCE = [
   },
   {
     title: "Software Developer",
-    org: "Aurm (Bangalore, India)",
-    period: "Jan 2026 – Mar 2026",
+    org: "Bangalore, Karnataka, India",
+    period: "Jan 2026 - Mar 2026",
+    image: "/aurm.svg",
+    link: "https://aurm.in/",
+    isMultivrse: false,
+    isAurm: true,
     bullets: [
       "Structured FaceID service codebase; implemented gender detection via Base64 image inputs",
       "Defined client transactions; built pipeline for vault cameras to capture and store recordings locally + cloud upload",
@@ -63,6 +70,36 @@ function Container({ children }: { children: React.ReactNode }) {
   return <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">{children}</div>;
 }
 
+// Hook for scroll-triggered animations
+function useScrollAnimation() {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.1, rootMargin: "0px 0px -100px 0px" }
+    );
+
+    const currentRef = ref.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, []);
+
+  return { ref, isVisible };
+}
+
 function Section({
   id,
   title,
@@ -74,25 +111,185 @@ function Section({
   subtitle?: string;
   children: React.ReactNode;
 }) {
+  const { ref, isVisible } = useScrollAnimation();
+
   return (
-    <section id={id} className="py-16 lg:py-24">
+    <section 
+      ref={ref as React.RefObject<HTMLElement>}
+      id={id} 
+      className={`py-16 lg:py-24 transition-all duration-1000 ease-out ${
+        isVisible 
+          ? 'opacity-100 translate-y-0' 
+          : 'opacity-0 translate-y-8'
+      }`}
+    >
       <div className="mb-10 lg:mb-16">
-        <div className="inline-block mb-3">
+        <div className={`inline-block mb-3 transition-all duration-700 delay-100 ${
+          isVisible 
+            ? 'opacity-100 translate-x-0' 
+            : 'opacity-0 -translate-x-4'
+        }`}>
           <h2 className="text-3xl font-extrabold tracking-tight lg:text-4xl xl:text-5xl">{title}</h2>
-          <div className="h-1 w-16 bg-gradient-to-r from-transparent via-black/30 to-transparent rounded-full mt-2"></div>
+          <div className={`h-1 w-16 bg-gradient-to-r from-transparent via-black/30 to-transparent rounded-full mt-2 transition-all duration-700 delay-200 ${
+            isVisible 
+              ? 'opacity-100 scale-x-100' 
+              : 'opacity-0 scale-x-0'
+          }`}></div>
         </div>
-        {subtitle ? <p className="text-sm text-black/65 mt-4 lg:text-base lg:max-w-2xl">{subtitle}</p> : null}
+        {subtitle ? (
+          <p className={`text-sm text-black/65 mt-4 lg:text-base lg:max-w-2xl transition-all duration-700 delay-150 ${
+            isVisible 
+              ? 'opacity-100 translate-y-0' 
+              : 'opacity-0 translate-y-4'
+          }`}>{subtitle}</p>
+        ) : null}
       </div>
       {children}
     </section>
   );
 }
 
-function Card({ children, className = "", featured = false }: { children: React.ReactNode; className?: string; featured?: boolean }) {
-  return (
-    <div className={`group rounded-2xl border border-black/12 bg-white/30 backdrop-blur-lg p-6 lg:p-8 shadow-sm transition-all duration-500 hover:shadow-xl hover:bg-white/40 hover:-translate-y-1 ${featured ? 'ring-2 ring-black/5' : ''} ${className}`}>
-      {children}
+// Hook for card animations
+function useCardAnimation(delay: number = 0) {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => setIsVisible(true), delay);
+        }
+      },
+      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => {
+      if (ref.current) {
+        observer.unobserve(ref.current);
+      }
+    };
+  }, [delay]);
+
+  return { ref, isVisible };
+}
+
+function Card({ 
+  children, 
+  className = "", 
+  featured = false, 
+  index = 0,
+  image = null,
+  link = null,
+  isMultivrse = false,
+  isAurm = false
+}: { 
+  children: React.ReactNode; 
+  className?: string; 
+  featured?: boolean; 
+  index?: number;
+  image?: string | null;
+  link?: string | null;
+  isMultivrse?: boolean;
+  isAurm?: boolean;
+}) {
+  const { ref, isVisible } = useCardAnimation(index * 100);
+
+  const cardContent = (
+    <div className={`flex gap-6 lg:gap-8 ${image ? 'flex-row' : ''}`}>
+      {image && (
+        <div className="flex-shrink-0">
+          {link ? (
+            <a 
+              href={link} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="block"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <img 
+                src={image} 
+                alt={isMultivrse ? "Multivrse" : "Company logo"} 
+                className="w-24 h-24 lg:w-32 lg:h-32 object-contain rounded-lg"
+              />
+            </a>
+          ) : (
+            <img 
+              src={image} 
+              alt="Company logo" 
+              className="w-24 h-24 lg:w-32 lg:h-32 object-contain rounded-lg"
+            />
+          )}
+        </div>
+      )}
+      <div className="flex-1">
+        {children}
+      </div>
     </div>
+  );
+
+  return (
+    <div 
+      ref={ref}
+      className={`group rounded-2xl border border-black/12 ${isMultivrse || isAurm ? '' : 'bg-white/30'} backdrop-blur-lg p-6 lg:p-10 shadow-sm transition-all duration-700 hover:shadow-xl hover:-translate-y-1 ${
+        featured ? 'ring-2 ring-black/5' : ''
+      } ${
+        isMultivrse 
+          ? 'multivrse-card' 
+          : isAurm
+          ? 'aurm-card'
+          : 'hover:bg-white/40'
+      } ${
+        isVisible 
+          ? 'opacity-100 translate-y-0 scale-100' 
+          : 'opacity-0 translate-y-8 scale-95'
+      } ${className}`}
+    >
+      {cardContent}
+    </div>
+  );
+}
+
+function HeroSection() {
+  const [scrollY, setScrollY] = useState(0);
+  const heroRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Parallax effect based on scroll
+  const parallaxOffset = Math.min(scrollY * 0.5, 200);
+  const opacity = Math.max(1 - scrollY / 400, 0.3);
+  const scale = Math.max(1 - scrollY / 1000, 0.8);
+
+  return (
+    <Container>
+      <div 
+        ref={heroRef}
+        className="min-h-[80vh] flex flex-col items-center justify-center text-center gap-8 lg:gap-12 transition-all duration-300"
+        style={{
+          transform: `translateY(${parallaxOffset}px) scale(${scale})`,
+          opacity: opacity,
+        }}
+      >
+        <div className="space-y-6">
+          <h1 className="text-5xl font-extrabold tracking-tight sm:text-6xl lg:text-7xl xl:text-8xl bg-clip-text">
+            {PROFILE.name}
+          </h1>
+          <p className="text-sm text-black/60 font-medium tracking-widest uppercase lg:text-base">Portfolio</p>
+        </div>
+      </div>
+    </Container>
   );
 }
 
@@ -140,40 +337,56 @@ function IconPaper() {
 }
 
 export default function Home() {
-  // Original scroll-driven gradient flow effect
+  // Dynamic animated gradient background with randomized movement
   useEffect(() => {
     // Only run on client side after hydration
     if (typeof window === 'undefined') return;
 
     const root = document.documentElement;
-    let ticking = false;
+    let animationFrameId: number;
+    let startTime = Date.now();
 
-    const setVars = () => {
-      const t = (window.scrollY || 0) % 1600;
-      root.style.setProperty("--s1", `${t * 0.18}px`);
-      root.style.setProperty("--s2", `${t * -0.10}px`);
-      root.style.setProperty("--s3", `${t * 0.06}px`);
-      root.style.setProperty("--s4", `${t * -0.04}px`);
-      root.style.setProperty("--s5", `${t * 0.12}px`);
-      ticking = false;
+    // Initialize random offsets for each gradient layer with moderate speeds
+    const offsets = {
+      s1: { base: Math.random() * 2, speed: 0.4 + Math.random() * 0.2, phase: Math.random() * Math.PI * 2 },
+      s2: { base: Math.random() * 2, speed: 0.35 + Math.random() * 0.2, phase: Math.random() * Math.PI * 2 },
+      s3: { base: Math.random() * 2, speed: 0.45 + Math.random() * 0.2, phase: Math.random() * Math.PI * 2 },
+      s4: { base: Math.random() * 2, speed: 0.38 + Math.random() * 0.2, phase: Math.random() * Math.PI * 2 },
+      s5: { base: Math.random() * 2, speed: 0.42 + Math.random() * 0.2, phase: Math.random() * Math.PI * 2 },
     };
 
-    const onScroll = () => {
-      if (!ticking) {
-        ticking = true;
-        requestAnimationFrame(setVars);
-      }
+    const animate = () => {
+      const elapsed = (Date.now() - startTime) / 1000; // Time in seconds
+      const vw = window.innerWidth / 100;
+      const vh = window.innerHeight / 100;
+
+      // Pure time-based animation with moderate movement
+      // Using reasonable limits to prevent stretching while allowing visible movement
+      const maxOffset = 20; // Increased for more visible movement
+      const amplitude = 8; // Moderate amplitude for smooth movement
+      
+      const s1 = Math.max(-maxOffset, Math.min(maxOffset, (offsets.s1.base + Math.sin(elapsed * offsets.s1.speed + offsets.s1.phase) * amplitude) * vw));
+      const s2 = Math.max(-maxOffset, Math.min(maxOffset, (offsets.s2.base + Math.sin(elapsed * offsets.s2.speed + offsets.s2.phase) * amplitude) * vw));
+      const s3 = Math.max(-maxOffset, Math.min(maxOffset, (offsets.s3.base + Math.sin(elapsed * offsets.s3.speed + offsets.s3.phase) * amplitude) * vw));
+      const s4 = Math.max(-maxOffset, Math.min(maxOffset, (offsets.s4.base + Math.sin(elapsed * offsets.s4.speed + offsets.s4.phase) * amplitude) * vw));
+      const s5 = Math.max(-maxOffset, Math.min(maxOffset, (offsets.s5.base + Math.sin(elapsed * offsets.s5.speed + offsets.s5.phase) * amplitude) * vh));
+
+      root.style.setProperty("--s1", `${s1}px`);
+      root.style.setProperty("--s2", `${s2}px`);
+      root.style.setProperty("--s3", `${s3}px`);
+      root.style.setProperty("--s4", `${s4}px`);
+      root.style.setProperty("--s5", `${s5}px`);
+
+      animationFrameId = requestAnimationFrame(animate);
     };
 
-    // Delay initial set to ensure hydration is complete
-    const timeoutId = setTimeout(() => {
-      setVars();
-      window.addEventListener("scroll", onScroll, { passive: true });
-    }, 0);
+    // Start animation immediately
+    animate();
 
     return () => {
-      clearTimeout(timeoutId);
-      window.removeEventListener("scroll", onScroll);
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
     };
   }, []);
 
@@ -193,8 +406,32 @@ export default function Home() {
     "relative rounded-full px-5 py-2.5 text-sm font-medium tracking-wide border border-black/10 bg-white/35 backdrop-blur-md shadow-sm text-black transition-all duration-300 hover:bg-black hover:text-white hover:scale-105 hover:shadow-md active:scale-95";
 
 
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      const scrollTop = window.scrollY;
+      const progress = scrollTop / (documentHeight - windowHeight);
+      setScrollProgress(Math.min(progress, 1));
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // Initial call
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <div className="min-h-screen">
+      {/* Scroll progress indicator */}
+      <div className="fixed top-0 left-0 right-0 h-1 bg-black/5 z-50">
+        <div 
+          className="h-full bg-gradient-to-r from-transparent via-black/20 to-transparent transition-all duration-150"
+          style={{ width: `${scrollProgress * 100}%` }}
+        />
+      </div>
+
       {/* Modern floating navigation */}
       <div className="sticky top-4 z-50 mt-4 lg:top-6">
         <Container>
@@ -215,17 +452,8 @@ export default function Home() {
         </Container>
       </div>
 
-      {/* Refined hero section */}
-      <Container>
-        <div className="min-h-[80vh] flex flex-col items-center justify-center text-center gap-8 lg:gap-12">
-          <div className="space-y-6">
-            <h1 className="text-5xl font-extrabold tracking-tight sm:text-6xl lg:text-7xl xl:text-8xl bg-clip-text">
-              {PROFILE.name}
-            </h1>
-            <p className="text-sm text-black/60 font-medium tracking-widest uppercase lg:text-base">Portfolio</p>
-          </div>
-        </div>
-      </Container>
+      {/* Refined hero section with scroll animation */}
+      <HeroSection />
 
       {/* Redesigned content sections */}
       <Container>
@@ -236,17 +464,25 @@ export default function Home() {
         >
           <div className="space-y-6">
             {EXPERIENCE.map((x, idx) => (
-              <Card key={x.title + x.org} featured={idx === 0}>
+              <Card 
+                key={x.title + x.org} 
+                featured={idx === 0} 
+                index={idx}
+                image={x.image || null}
+                link={x.link || null}
+                isMultivrse={x.isMultivrse || false}
+                isAurm={x.isAurm || false}
+              >
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div className="flex-1 space-y-1">
-                    <h3 className="text-lg font-bold lg:text-xl">{x.title}</h3>
-                    <p className="text-sm text-black/70 lg:text-base">{x.org}</p>
+                    <h3 className="text-lg font-bold lg:text-xl transition-colors duration-700 text-black">{x.title}</h3>
+                    <p className="text-sm text-black/70 lg:text-base transition-colors duration-700">{x.org}</p>
                   </div>
-                  <div className="text-xs font-medium text-black/60 lg:text-sm whitespace-nowrap">{x.period}</div>
+                  <div className={`text-xs font-medium text-black/60 lg:text-sm whitespace-nowrap transition-colors duration-700 period ${x.isMultivrse ? '' : ''}`}>{x.period}</div>
                 </div>
                 <ul className="mt-5 space-y-2 list-disc pl-5 text-sm text-black/70 lg:text-base lg:space-y-2.5">
                   {x.bullets.map((b) => (
-                    <li key={b} className="leading-relaxed">{b}</li>
+                    <li key={b} className="leading-relaxed transition-colors duration-700">{b}</li>
                   ))}
                 </ul>
               </Card>
@@ -260,8 +496,8 @@ export default function Home() {
           subtitle="Where I studied and what I'm currently focused on."
         >
           <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
-            {EDUCATION.map((e) => (
-              <Card key={e.title}>
+            {EDUCATION.map((e, idx) => (
+              <Card key={e.title} index={idx}>
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between mb-5">
                   <div className="flex-1 space-y-1">
                     <h3 className="text-lg font-bold lg:text-xl">{e.title}</h3>
@@ -283,8 +519,8 @@ export default function Home() {
           subtitle="Languages, frameworks, and tools I've used."
         >
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
-            {Object.entries(SKILLS).map(([k, items]) => (
-              <Card key={k} className="h-full flex flex-col">
+            {Object.entries(SKILLS).map(([k, items], idx) => (
+              <Card key={k} className="h-full flex flex-col" index={idx}>
                 <h3 className="text-base font-bold mb-4 lg:text-lg">{k}</h3>
                 <div className="flex flex-wrap gap-2 mt-auto">
                   {items.map((s) => (
@@ -302,8 +538,8 @@ export default function Home() {
           subtitle="Credentials and programs completed."
         >
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
-            {CERTIFICATIONS.map((c) => (
-              <Card key={c.title}>
+            {CERTIFICATIONS.map((c, idx) => (
+              <Card key={c.title} index={idx}>
                 <h3 className="text-base font-bold mb-2 lg:text-lg">{c.title}</h3>
                 <p className="text-xs text-black/65 lg:text-sm">{c.meta}</p>
               </Card>
@@ -317,7 +553,7 @@ export default function Home() {
           subtitle="Community involvement and volunteer work."
         >
           <div className="max-w-2xl">
-            <Card>
+            <Card index={0}>
               <h3 className="text-base font-bold mb-2 lg:text-lg">Coming soon</h3>
               <p className="text-sm text-black/65 lg:text-base">Volunteering experiences will be added here.</p>
             </Card>

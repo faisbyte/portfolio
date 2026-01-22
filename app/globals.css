@@ -24,7 +24,7 @@ body {
 }
 
 body {
-  background: transparent; /* IMPORTANT: don’t hide the tie dye */
+  background: transparent; /* IMPORTANT: do not hide the tie dye */
   color: var(--foreground);
 }
 
@@ -36,30 +36,76 @@ body::before {
   z-index: -1;
   pointer-events: none;
 
-  /* dodgerblue = #1E90FF */
+  /* dodgerblue = #1E90FF - Enhanced blue visibility */
   background:
-    radial-gradient(60vmax 60vmax at 15% 20%, rgba(30, 144, 255, 0.55) 0%, rgba(30, 144, 255, 0) 62%),
-    radial-gradient(55vmax 55vmax at 85% 15%, rgba(30, 144, 255, 0.45) 0%, rgba(30, 144, 255, 0) 60%),
-    radial-gradient(65vmax 65vmax at 25% 85%, rgba(30, 144, 255, 0.40) 0%, rgba(30, 144, 255, 0) 62%),
-    radial-gradient(50vmax 50vmax at 78% 82%, rgba(30, 144, 255, 0.35) 0%, rgba(30, 144, 255, 0) 62%),
-    radial-gradient(90vmax 90vmax at 50% 50%, rgba(30, 144, 255, 0.30) 0%, rgba(30, 144, 255, 0) 68%),
-    radial-gradient(140vmax 140vmax at 50% 50%, #ffffff 0%, #ffffff 45%, rgba(255, 255, 255, 0.92) 100%);
+    radial-gradient(70vmax 70vmax at 15% 20%, rgba(30, 144, 255, 0.75) 0%, rgba(0, 0, 0, 0.6) 70%),
+    radial-gradient(65vmax 65vmax at 85% 15%, rgba(30, 144, 255, 0.70) 0%, rgba(0, 0, 0, 0.5) 65%),
+    radial-gradient(75vmax 75vmax at 25% 85%, rgba(30, 144, 255, 0.65) 0%, rgba(0, 0, 0, 0.55) 70%),
+    radial-gradient(60vmax 60vmax at 78% 82%, rgba(30, 144, 255, 0.60) 0%, rgba(0, 0, 0, 0.5) 65%),
+    radial-gradient(100vmax 100vmax at 50% 50%, rgba(30, 144, 255, 0.55) 0%, rgba(0, 0, 0, 0.45) 75%),
+    radial-gradient(80vmax 80vmax at 60% 30%, rgba(30, 144, 255, 0.50) 0%, rgba(0, 0, 0, 0.4) 70%),
+    radial-gradient(70vmax 70vmax at 30% 60%, rgba(30, 144, 255, 0.45) 0%, rgba(0, 0, 0, 0.4) 65%),
+    radial-gradient(140vmax 140vmax at 50% 50%, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.8) 50%, rgba(255, 255, 255, 0.1) 100%);
 
   background-repeat: no-repeat;
 
-  /* Scroll-driven “flow” */
+  /* Scroll-driven "flow" - Enhanced with more layers */
+  /* Allowing more movement range for visible animation */
   background-position:
     calc(10% + var(--s3)) calc(15% + var(--s1)),
     calc(90% + var(--s2)) calc(10% + var(--s4)),
     calc(20% + var(--s1)) calc(90% + var(--s2)),
     calc(85% + var(--s4)) calc(85% + var(--s3)),
     50% calc(50% + var(--s5)),
+    calc(60% + var(--s1)) calc(30% + var(--s2)),
+    calc(30% + var(--s3)) calc(60% + var(--s4)),
     center;
 
-  filter: saturate(120%) contrast(110%);
+  filter: saturate(130%) contrast(115%);
   transform: translateZ(0);
+  will-change: background-position;
 }
 
 ::selection {
   background: rgba(30, 144, 255, 0.25);
+}
+
+/* Multivrse card hover effect */
+.multivrse-card {
+  background: rgba(255, 255, 255, 0.3) !important;
+  transition: background-color 0.7s ease, backdrop-filter 0.7s ease;
+}
+
+.multivrse-card:hover {
+  background-color: white !important;
+  background: white !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.multivrse-card:hover h3,
+.multivrse-card:hover p,
+.multivrse-card:hover li,
+.multivrse-card:hover .period {
+  color: rgb(16, 47, 119) !important;
+}
+
+/* Aurm card hover effect */
+.aurm-card {
+  background: rgba(255, 255, 255, 0.3) !important;
+  transition: background-color 0.7s ease, backdrop-filter 0.7s ease;
+}
+
+.aurm-card:hover {
+  background-color: rgb(24, 18, 44) !important;
+  background: rgb(24, 18, 44) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.aurm-card:hover h3,
+.aurm-card:hover p,
+.aurm-card:hover li,
+.aurm-card:hover .period {
+  color: white !important;
 }
