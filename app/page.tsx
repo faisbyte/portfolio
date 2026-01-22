@@ -319,7 +319,6 @@ function HeroSection() {
           <h1 className="text-5xl font-extrabold tracking-tight sm:text-6xl lg:text-7xl xl:text-8xl bg-clip-text">
             {PROFILE.name}
           </h1>
-            <p className="text-sm text-white/80 font-medium tracking-widest uppercase lg:text-base">Portfolio</p>
         </div>
       </div>
     </Container>
