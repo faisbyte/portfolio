@@ -63,11 +63,32 @@ const CERTIFICATIONS = [
   { title: "Quantium Data Analytics Simulation", meta: "ID: Fz3Mt4pmcNou8FZsC" },
 ];
 
-const SKILLS = {
-  "Programming & DB": ["Python", "Java", "Swift", "JavaScript", "HTML/CSS", "R", "MySQL", "PostgreSQL", "Oracle"],
-  "Analytics & Tools": ["Pandas", "NumPy", "GeoPandas", "Scikit-Learn", "Statsmodels", "Plotly", "Power BI", "Tableau", "Figma", "Excel"],
-  "Soft Skills": ["Communication", "Collaboration", "Problem Solving", "Leadership", "Creativity"],
-};
+// Logo files from public/logos directory
+const LOGOS = [
+  "bitbucket.png",
+  "confluence.png",
+  "css.png",
+  "figma.png",
+  "github.png",
+  "html.png",
+  "java.png",
+  "jira.png",
+  "mongo.png",
+  "mysql.png",
+  "nextjs.png",
+  "npm.png",
+  "postgre.png",
+  "powerbi.png",
+  "python.png",
+  "R.png",
+  "react.png",
+  "sqlite.png",
+  "supabase.png",
+  "swift.png",
+  "tableau.png",
+  "ts.png",
+  "vercel.png",
+];
 
 function Container({ children }: { children: React.ReactNode }) {
   return <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">{children}</div>;
@@ -505,7 +526,7 @@ export default function Home() {
         <Section
           id="education"
           title="Education"
-          subtitle="Where I've studied and my academic achievements there."
+          subtitle="Where I've spent (constructively) 4 years of my life."
         >
           <div className="space-y-6">
             {EDUCATION.map((e, idx) => (
@@ -536,17 +557,34 @@ export default function Home() {
           title="Technologies"
           subtitle="Languages, frameworks, and tools I've used."
         >
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
-            {Object.entries(SKILLS).map(([k, items], idx) => (
-              <Card key={k} className="h-full flex flex-col" index={idx}>
-                <h3 className="text-base font-bold mb-4 lg:text-lg">{k}</h3>
-                <div className="flex flex-wrap gap-2 mt-auto">
-                  {items.map((s) => (
-                    <Pill key={s}>{s}</Pill>
-                  ))}
-                </div>
-              </Card>
-            ))}
+          <div className="relative overflow-hidden py-8">
+            {/* Logo Marquee - 2 rows, flowing left to right */}
+            <div className="flex flex-col gap-12">
+              {/* First Row - flows left to right */}
+              <div className="flex animate-marquee gap-12">
+                {[...LOGOS, ...LOGOS].map((logo, idx) => (
+                  <div key={`row1-${idx}`} className="flex-shrink-0">
+                    <img 
+                      src={`/logos/${logo}`} 
+                      alt={logo.replace('.png', '')} 
+                      className="h-16 w-16 object-contain opacity-80 transition-opacity hover:opacity-100 lg:h-20 lg:w-20"
+                    />
+                  </div>
+                ))}
+              </div>
+              {/* Second Row - flows left to right (offset for visual interest) */}
+              <div className="flex animate-marquee-reverse gap-12">
+                {[...LOGOS.slice(Math.floor(LOGOS.length / 2)), ...LOGOS, ...LOGOS.slice(0, Math.floor(LOGOS.length / 2))].map((logo, idx) => (
+                  <div key={`row2-${idx}`} className="flex-shrink-0">
+                    <img 
+                      src={`/logos/${logo}`} 
+                      alt={logo.replace('.png', '')} 
+                      className="h-16 w-16 object-contain opacity-80 transition-opacity hover:opacity-100 lg:h-20 lg:w-20"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </Section>
 

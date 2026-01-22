@@ -150,3 +150,25 @@ body::before {
 .education-card:hover .period {
   color: white !important;
 }
+
+/* Logo Marquee Animation */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+  display: flex;
+  width: fit-content;
+}
+
+.animate-marquee-reverse {
+  animation: marquee 35s linear infinite reverse;
+  display: flex;
+  width: fit-content;
+}
