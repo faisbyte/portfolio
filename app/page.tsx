@@ -1,6 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import AnimatedParticles from "./components/AnimatedParticles";
+import FloatingShapes from "./components/FloatingShapes";
+import AnimatedText from "./components/AnimatedText";
 
 type Link = { label: string; href: string; external?: boolean };
 
@@ -307,18 +310,47 @@ function HeroSection() {
 
   return (
     <Container>
+      <AnimatedParticles />
+      <FloatingShapes />
       <div 
         ref={heroRef}
-        className="min-h-[80vh] flex flex-col items-center justify-center text-center gap-8 lg:gap-12 transition-all duration-300"
+        className="min-h-[100vh] flex flex-col items-center justify-center text-center gap-8 lg:gap-12 transition-all duration-300 relative z-10"
         style={{
           transform: `translateY(${parallaxOffset}px) scale(${scale})`,
           opacity: opacity,
         }}
       >
-        <div className="space-y-6">
-          <h1 className="text-5xl font-extrabold tracking-tight sm:text-6xl lg:text-7xl xl:text-8xl bg-clip-text">
-            {PROFILE.name}
-          </h1>
+        <div className="space-y-8 lg:space-y-12 animate-fade-in">
+          {/* Animated name with entrance effect */}
+          <div className="space-y-4">
+            <h1 className="text-5xl font-extrabold tracking-tight sm:text-6xl lg:text-7xl xl:text-8xl text-white animate-slide-up">
+              {PROFILE.name}
+            </h1>
+            <div className="h-1 w-24 bg-gradient-to-r from-transparent via-white to-transparent mx-auto animate-expand" />
+          </div>
+          
+          {/* Animated role text */}
+          <div className="animate-slide-up-delay">
+            <AnimatedText />
+          </div>
+
+          {/* Scroll indicator */}
+          <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <div className="flex flex-col items-center gap-2">
+              <span className="text-sm text-white/70">Scroll to explore</span>
+              <svg
+                className="w-6 h-6 text-white/70"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+              </svg>
+            </div>
+          </div>
         </div>
       </div>
     </Container>
