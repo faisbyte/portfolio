@@ -67,8 +67,8 @@ const EXPERIENCE = [
     isAurm: false,
     isMarquis: true,
     bullets: [
-      "Partnerships co-ordinator for newly acquired EdTech startup in Abu Dhabi",
-      "Leading outreach for university consultancy services launched in India",
+      "Coordinated strategic partnerships for a newly acquired EdTech startup in Abu Dhabi, supporting market entry, stakeholder alignment, and early growth initiatives.",
+      "Led outreach and relationship development for the launch of university consultancy services in India, engaging institutions and prospective partners to establish local presence.",
     ],
   },
 ];
