@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import AnimatedText from "./components/AnimatedText";
 import GlobalMouse3D from "./components/GlobalMouse3D";
+import AnimatedRibbonBackground from "./components/AnimatedRibbonBackground";
 
 type Link = { label: string; href: string; external?: boolean };
 
@@ -526,6 +527,9 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
+      {/* Animated Ribbon Background */}
+      <AnimatedRibbonBackground />
+      
       {/* Scroll progress indicator */}
       <div className="fixed top-0 left-0 right-0 h-1 bg-black/5 z-50">
         <div 
