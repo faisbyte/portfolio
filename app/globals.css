@@ -57,8 +57,7 @@ body {
   color: inherit;
 }
 
-/* Beautiful dark gradient background - Dodgerblue themed */
-/* Option 1: Dodgerblue & Deep Navy (Classic Blue - Currently Active) */
+/* Beautiful dark gradient background - Deep Navy Blue to Rich Purple/Violet (Smooth & Animated) */
 body::before {
   content: "";
   position: fixed;
@@ -66,29 +65,27 @@ body::before {
   z-index: -1;
   pointer-events: none;
 
-  /* Dodgerblue = #1E90FF (rgb(30, 144, 255)) */
+  /* Deep navy blue transitioning to rich purple/violet - smooth, atmospheric gradient */
   background:
-    radial-gradient(80vmax 80vmax at 20% 20%, rgba(30, 144, 255, 0.65) 0%, rgba(15, 23, 42, 0.4) 60%, transparent 80%),
-    radial-gradient(90vmax 90vmax at 80% 30%, rgba(30, 144, 255, 0.6) 0%, rgba(30, 58, 138, 0.35) 60%, transparent 80%),
-    radial-gradient(70vmax 70vmax at 30% 80%, rgba(59, 130, 246, 0.55) 0%, rgba(15, 23, 42, 0.3) 60%, transparent 80%),
-    radial-gradient(100vmax 100vmax at 70% 70%, rgba(30, 144, 255, 0.5) 0%, rgba(15, 23, 42, 0.4) 65%, transparent 85%),
-    radial-gradient(85vmax 85vmax at 50% 10%, rgba(37, 99, 235, 0.45) 0%, rgba(30, 58, 138, 0.3) 60%, transparent 80%),
-    radial-gradient(95vmax 95vmax at 10% 50%, rgba(30, 144, 255, 0.4) 0%, rgba(15, 23, 42, 0.35) 60%, transparent 80%),
-    radial-gradient(120vmax 120vmax at 50% 50%, rgba(15, 23, 42, 0.5) 0%, rgba(2, 6, 23, 0.8) 50%, rgba(0, 0, 0, 0.95) 100%);
+    radial-gradient(100vmax 100vmax at 10% 10%, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.6) 50%, transparent 80%),
+    radial-gradient(90vmax 90vmax at 90% 30%, rgba(67, 56, 202, 0.6) 0%, rgba(55, 48, 163, 0.4) 50%, transparent 75%),
+    radial-gradient(85vmax 85vmax at 30% 70%, rgba(79, 70, 229, 0.7) 0%, rgba(67, 56, 202, 0.5) 50%, transparent 75%),
+    radial-gradient(95vmax 95vmax at 70% 80%, rgba(99, 102, 241, 0.65) 0%, rgba(79, 70, 229, 0.45) 50%, transparent 75%),
+    radial-gradient(110vmax 110vmax at 50% 50%, rgba(139, 92, 246, 0.5) 0%, rgba(109, 40, 217, 0.3) 60%, transparent 80%),
+    radial-gradient(120vmax 120vmax at 50% 50%, rgba(15, 23, 42, 0.6) 0%, rgba(2, 6, 23, 0.8) 50%, rgba(0, 0, 0, 0.95) 100%);
 
   background-repeat: no-repeat;
 
-  /* Scroll-driven smooth animation */
+  /* Constant smooth animation - scroll-driven movement */
   background-position:
-    calc(20% + var(--s1) + var(--scroll-y1)) calc(20% + var(--s2) + var(--scroll-y2)),
-    calc(80% + var(--s3) + var(--scroll-y3)) calc(30% + var(--s4) + var(--scroll-y4)),
-    calc(30% + var(--s5) + var(--scroll-y5)) calc(80% + var(--s1) + var(--scroll-y1)),
-    calc(70% + var(--s2) + var(--scroll-y2)) calc(70% + var(--s3) + var(--scroll-y3)),
-    calc(50% + var(--s4) + var(--scroll-y4)) calc(10% + var(--s5) + var(--scroll-y5)),
-    calc(10% + var(--s1) + var(--scroll-y1)) calc(50% + var(--s2) + var(--scroll-y2)),
+    calc(10% + var(--s1) + var(--scroll-y1)) calc(10% + var(--s2) + var(--scroll-y2)),
+    calc(90% + var(--s3) + var(--scroll-y3)) calc(30% + var(--s4) + var(--scroll-y4)),
+    calc(30% + var(--s5) + var(--scroll-y5)) calc(70% + var(--s1) + var(--scroll-y1)),
+    calc(70% + var(--s2) + var(--scroll-y2)) calc(80% + var(--s3) + var(--scroll-y3)),
+    calc(50% + var(--s4) + var(--scroll-y4)) calc(50% + var(--s5) + var(--scroll-y5)),
     center;
 
-  filter: saturate(125%) contrast(115%) brightness(0.95);
+  filter: saturate(120%) contrast(105%) brightness(0.9);
   transform: translateZ(0);
   will-change: background-position;
   transition: background-position 0.1s ease-out;
@@ -297,6 +294,31 @@ body::before {
   color: white !important;
 }
 
+/* Marquis card hover effect */
+.marquis-card {
+  background: rgba(255, 255, 255, 0.3) !important;
+  transition: background-color 0.7s ease, backdrop-filter 0.7s ease;
+}
+
+.marquis-card:hover {
+  background-color: rgb(248, 211, 71) !important;
+  background: rgb(248, 211, 71) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.marquis-card:hover * {
+  color: black !important;
+}
+
+.marquis-card:hover h3,
+.marquis-card:hover p,
+.marquis-card:hover li,
+.marquis-card:hover .period,
+.marquis-card:hover span {
+  color: black !important;
+}
+
 /* Logo Marquee Animation - Seamless infinite loop */
 @keyframes marquee {
   0% {
@@ -387,4 +409,19 @@ body::before {
 
 .animate-expand {
   animation: expand 1s ease-out 0.5s both;
+}
+
+/* 3D Mouse Tracking Effects */
+.hero-name-3d {
+  text-shadow: 
+    0 0 20px rgba(30, 144, 255, 0.3),
+    0 10px 30px rgba(0, 0, 0, 0.5),
+    0 20px 40px rgba(0, 0, 0, 0.3);
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.hero-text-3d {
+  transform-style: preserve-3d;
+  will-change: transform;
 }

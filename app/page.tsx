@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import AnimatedText from "./components/AnimatedText";
+import GlobalMouse3D from "./components/GlobalMouse3D";
 
 type Link = { label: string; href: string; external?: boolean };
 
@@ -54,6 +55,20 @@ const EXPERIENCE = [
       "Defined client transactions; built pipeline for vault cameras to capture and store recordings locally + cloud upload",
       "Modelled MongoDB to support transactions in bay area + vault workflows",
       "Automated vault recording for error/edge-case events",
+    ],
+  },
+  {
+    title: "Business Development Executive",
+    org: "Sydney, New South Wales, Australia (Remote)",
+    period: "Nov 2025 - Jan 2026",
+    image: "/marquis.png",
+    link: "https://www.marquiseducation.com.au/",
+    isMultivrse: false,
+    isAurm: false,
+    isMarquis: true,
+    bullets: [
+      "Partnerships co-ordinator for newly acquired EdTech startup in Abu Dhabi",
+      "Leading outreach for university consultancy services launched in India",
     ],
   },
 ];
@@ -212,7 +227,8 @@ function Card({
   link = null,
   isMultivrse = false,
   isAurm = false,
-  isEducation = false
+  isEducation = false,
+  isMarquis = false
 }: { 
   children: React.ReactNode; 
   className?: string; 
@@ -223,6 +239,7 @@ function Card({
   isMultivrse?: boolean;
   isAurm?: boolean;
   isEducation?: boolean;
+  isMarquis?: boolean;
 }) {
   const { ref, isVisible } = useCardAnimation(index * 100);
 
@@ -256,6 +273,8 @@ function Card({
       ? 'aurm-card'
       : isEducation
       ? 'education-card'
+      : isMarquis
+      ? 'marquis-card'
       : 'hover:bg-white/40'
   } ${
     isVisible 
@@ -317,18 +336,19 @@ function HeroSection() {
         }}
       >
         <div className="space-y-8 lg:space-y-12 animate-fade-in">
-          {/* Animated name with entrance effect */}
-          <div className="space-y-4">
-            <h1 className="text-5xl font-extrabold tracking-tight sm:text-6xl lg:text-7xl xl:text-8xl text-white animate-slide-up">
-              {PROFILE.name}
-            </h1>
-            <div className="h-1 w-24 bg-gradient-to-r from-transparent via-white to-transparent mx-auto animate-expand" />
-          </div>
-          
-          {/* Animated role text */}
-          <div className="animate-slide-up-delay">
-            <AnimatedText />
-          </div>
+          {/* Animated name with entrance effect - 3D mouse tracking */}
+          <GlobalMouse3D>
+            <div className="space-y-4">
+              <h1 className="text-5xl font-extrabold tracking-tight sm:text-6xl lg:text-7xl xl:text-8xl text-white animate-slide-up hero-name-3d">
+                {PROFILE.name}
+              </h1>
+              
+              {/* Animated role text - 3D mouse tracking - now below name */}
+              <div className="animate-slide-up-delay hero-text-3d">
+                <AnimatedText />
+              </div>
+            </div>
+          </GlobalMouse3D>
 
           {/* Scroll indicator */}
           <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
@@ -554,6 +574,7 @@ export default function Home() {
                 link={x.link || null}
                 isMultivrse={x.isMultivrse || false}
                 isAurm={x.isAurm || false}
+                isMarquis={x.isMarquis || false}
               >
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div className="flex-1 space-y-1">
@@ -693,7 +714,18 @@ export default function Home() {
         </Section>
 
         <footer className="py-12 text-center text-xs text-white/60 lg:text-sm lg:py-16">
-          © {new Date().getFullYear()} {PROFILE.name}
+          <a
+            href="https://www.linkedin.com/in/faisal-naveed-32bb55288/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block transition-opacity hover:opacity-80"
+          >
+            <img
+              src="/linkedin.png"
+              alt="LinkedIn"
+              className="h-12 w-auto lg:h-16"
+            />
+          </a>
         </footer>
       </Container>
     </div>

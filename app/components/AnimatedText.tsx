@@ -57,11 +57,7 @@ export default function AnimatedText() {
   return (
     <div className="text-center">
       <p className="text-lg sm:text-xl lg:text-2xl text-white/90 font-light">
-        I'm a{" "}
-        <span className="inline-block min-w-[200px] text-left">
-          <span className="text-white font-semibold">{displayText}</span>
-          <span className="animate-pulse">|</span>
-        </span>
+        I'm a <span className="text-white font-semibold">{displayText}</span><span className="animate-pulse">|</span>
       </p>
     </div>
   );
