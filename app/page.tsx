@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import AnimatedParticles from "./components/AnimatedParticles";
-import FloatingShapes from "./components/FloatingShapes";
 import AnimatedText from "./components/AnimatedText";
 
 type Link = { label: string; href: string; external?: boolean };
@@ -310,8 +308,6 @@ function HeroSection() {
 
   return (
     <Container>
-      <AnimatedParticles />
-      <FloatingShapes />
       <div 
         ref={heroRef}
         className="min-h-[100vh] flex flex-col items-center justify-center text-center gap-8 lg:gap-12 transition-all duration-300 relative z-10"
@@ -401,7 +397,7 @@ function IconPaper() {
 }
 
 export default function Home() {
-  // Dynamic animated gradient background with randomized movement
+  // Dynamic animated gradient background with randomized movement + scroll-based animation
   useEffect(() => {
     // Only run on client side after hydration
     if (typeof window === 'undefined') return;
@@ -409,6 +405,7 @@ export default function Home() {
     const root = document.documentElement;
     let animationFrameId: number;
     let startTime = Date.now();
+    let lastScrollY = 0;
 
     // Initialize random offsets for each gradient layer with faster, more visible speeds
     const offsets = {
@@ -417,6 +414,22 @@ export default function Home() {
       s3: { base: Math.random() * 3, speed: 0.7 + Math.random() * 0.3, phase: Math.random() * Math.PI * 2 },
       s4: { base: Math.random() * 3, speed: 0.55 + Math.random() * 0.3, phase: Math.random() * Math.PI * 2 },
       s5: { base: Math.random() * 3, speed: 0.65 + Math.random() * 0.3, phase: Math.random() * Math.PI * 2 },
+    };
+
+    // Scroll handler for smooth gradient movement
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const scrollProgress = scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+      
+      // Smooth scroll-based offsets - different directions for each layer
+      const scrollMultiplier = 30; // Adjust for more/less movement
+      root.style.setProperty("--scroll-y1", `${Math.sin(scrollProgress * Math.PI * 2) * scrollMultiplier}px`);
+      root.style.setProperty("--scroll-y2", `${Math.cos(scrollProgress * Math.PI * 2) * scrollMultiplier}px`);
+      root.style.setProperty("--scroll-y3", `${Math.sin(scrollProgress * Math.PI * 3) * scrollMultiplier * 0.8}px`);
+      root.style.setProperty("--scroll-y4", `${Math.cos(scrollProgress * Math.PI * 3) * scrollMultiplier * 0.8}px`);
+      root.style.setProperty("--scroll-y5", `${Math.sin(scrollProgress * Math.PI * 1.5) * scrollMultiplier * 0.6}px`);
+      
+      lastScrollY = scrollY;
     };
 
     const animate = () => {
@@ -446,11 +459,16 @@ export default function Home() {
 
     // Start animation immediately
     animate();
+    
+    // Add scroll listener for smooth gradient movement
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // Initial call
 
     return () => {
       if (animationFrameId) {
         cancelAnimationFrame(animationFrameId);
       }
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
@@ -589,31 +607,36 @@ export default function Home() {
           subtitle="Languages, frameworks, and tools I've used."
         >
           <div className="relative overflow-hidden py-8">
-            {/* Logo Marquee - 2 rows, flowing left to right */}
+            {/* Logo Marquee - 2 rows, flowing left to right - seamless infinite loop */}
             <div className="flex flex-col gap-12">
               {/* First Row - flows left to right */}
-              <div className="flex animate-marquee gap-12">
-                {[...LOGOS, ...LOGOS].map((logo, idx) => (
-                  <div key={`row1-${idx}`} className="flex-shrink-0">
-                    <img 
-                      src={`/logos/${logo}`} 
-                      alt={logo.replace('.png', '')} 
-                      className="h-16 w-16 object-contain opacity-80 transition-opacity hover:opacity-100 lg:h-20 lg:w-20"
-                    />
-                  </div>
-                ))}
+              <div className="flex overflow-hidden">
+                <div className="flex animate-marquee gap-12">
+                  {[...LOGOS, ...LOGOS, ...LOGOS].map((logo, idx) => (
+                    <div key={`row1-${idx}`} className="flex-shrink-0">
+                      <img 
+                        src={`/logos/${logo}`} 
+                        alt={logo.replace('.png', '')} 
+                        className="h-20 w-20 object-contain opacity-80 transition-opacity hover:opacity-100 lg:h-28 lg:w-28"
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
-              {/* Second Row - flows left to right (offset for visual interest) */}
-              <div className="flex animate-marquee-reverse gap-12">
-                {[...LOGOS.slice(Math.floor(LOGOS.length / 2)), ...LOGOS, ...LOGOS.slice(0, Math.floor(LOGOS.length / 2))].map((logo, idx) => (
-                  <div key={`row2-${idx}`} className="flex-shrink-0">
-                    <img 
-                      src={`/logos/${logo}`} 
-                      alt={logo.replace('.png', '')} 
-                      className="h-16 w-16 object-contain opacity-80 transition-opacity hover:opacity-100 lg:h-20 lg:w-20"
-                    />
-                  </div>
-                ))}
+              {/* Second Row - flows right to left (reverse) with offset to show different logos */}
+              <div className="flex overflow-hidden">
+                <div className="flex animate-marquee-reverse gap-12">
+                  {/* Offset the second row by half the array length to show different logos */}
+                  {[...LOGOS.slice(Math.floor(LOGOS.length / 2)), ...LOGOS, ...LOGOS, ...LOGOS.slice(0, Math.floor(LOGOS.length / 2))].map((logo, idx) => (
+                    <div key={`row2-${idx}`} className="flex-shrink-0">
+                      <img 
+                        src={`/logos/${logo}`} 
+                        alt={logo.replace('.png', '')} 
+                        className="h-20 w-20 object-contain opacity-80 transition-opacity hover:opacity-100 lg:h-28 lg:w-28"
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>

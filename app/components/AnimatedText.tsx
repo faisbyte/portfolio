@@ -6,6 +6,7 @@ const roles = [
   "Software Engineer",
   "Full Stack Developer",
   "Data Scientist",
+  "Business Development Manager",
   "Problem Solver",
   "Creative Thinker",
 ];
@@ -16,24 +17,35 @@ export default function AnimatedText() {
   const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
-    let timeout: NodeJS.Timeout;
     const current = roles[currentRole];
     const fullText = current;
 
+    let timeout: NodeJS.Timeout;
+
     if (isDeleting) {
+      // Deleting: remove one character at a time, faster than typing
       if (displayText.length > 0) {
-        setDisplayText((prev) => prev.slice(0, -1));
-        timeout = setTimeout(() => {}, 50);
+        timeout = setTimeout(() => {
+          setDisplayText((prev) => prev.slice(0, -1));
+        }, 50); // Faster when deleting
       } else {
-        setIsDeleting(false);
-        setCurrentRole((prev) => (prev + 1) % roles.length);
+        // Finished deleting, move to next role
+        timeout = setTimeout(() => {
+          setIsDeleting(false);
+          setCurrentRole((prev) => (prev + 1) % roles.length);
+        }, 500); // Brief pause before starting next word
       }
     } else {
+      // Typing: add one character at a time
       if (displayText.length < fullText.length) {
-        setDisplayText(fullText.slice(0, displayText.length + 1));
-        timeout = setTimeout(() => {}, 100);
+        timeout = setTimeout(() => {
+          setDisplayText(fullText.slice(0, displayText.length + 1));
+        }, 100); // Normal typing speed
       } else {
-        timeout = setTimeout(() => setIsDeleting(true), 2000);
+        // Finished typing, wait then start deleting
+        timeout = setTimeout(() => {
+          setIsDeleting(true);
+        }, 2000); // Pause before deleting
       }
     }
 

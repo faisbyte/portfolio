@@ -16,6 +16,13 @@
   --s3: 0px;
   --s4: 0px;
   --s5: 0px;
+  
+  /* Scroll-based position offsets for smooth gradient movement */
+  --scroll-y1: 0px;
+  --scroll-y2: 0px;
+  --scroll-y3: 0px;
+  --scroll-y4: 0px;
+  --scroll-y5: 0px;
 }
 
 html,
@@ -50,7 +57,8 @@ body {
   color: inherit;
 }
 
-/* Tie-dye layer behind everything */
+/* Beautiful dark gradient background - Dodgerblue themed */
+/* Option 1: Dodgerblue & Deep Navy (Classic Blue - Currently Active) */
 body::before {
   content: "";
   position: fixed;
@@ -58,35 +66,173 @@ body::before {
   z-index: -1;
   pointer-events: none;
 
-  /* dodgerblue = #1E90FF - Enhanced blue visibility */
+  /* Dodgerblue = #1E90FF (rgb(30, 144, 255)) */
   background:
-    radial-gradient(70vmax 70vmax at 15% 20%, rgba(30, 144, 255, 0.75) 0%, rgba(0, 0, 0, 0.6) 70%),
-    radial-gradient(65vmax 65vmax at 85% 15%, rgba(30, 144, 255, 0.70) 0%, rgba(0, 0, 0, 0.5) 65%),
-    radial-gradient(75vmax 75vmax at 25% 85%, rgba(30, 144, 255, 0.65) 0%, rgba(0, 0, 0, 0.55) 70%),
-    radial-gradient(60vmax 60vmax at 78% 82%, rgba(30, 144, 255, 0.60) 0%, rgba(0, 0, 0, 0.5) 65%),
-    radial-gradient(100vmax 100vmax at 50% 50%, rgba(30, 144, 255, 0.55) 0%, rgba(0, 0, 0, 0.45) 75%),
-    radial-gradient(80vmax 80vmax at 60% 30%, rgba(30, 144, 255, 0.50) 0%, rgba(0, 0, 0, 0.4) 70%),
-    radial-gradient(70vmax 70vmax at 30% 60%, rgba(30, 144, 255, 0.45) 0%, rgba(0, 0, 0, 0.4) 65%),
-    radial-gradient(140vmax 140vmax at 50% 50%, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.8) 50%, rgba(255, 255, 255, 0.1) 100%);
+    radial-gradient(80vmax 80vmax at 20% 20%, rgba(30, 144, 255, 0.65) 0%, rgba(15, 23, 42, 0.4) 60%, transparent 80%),
+    radial-gradient(90vmax 90vmax at 80% 30%, rgba(30, 144, 255, 0.6) 0%, rgba(30, 58, 138, 0.35) 60%, transparent 80%),
+    radial-gradient(70vmax 70vmax at 30% 80%, rgba(59, 130, 246, 0.55) 0%, rgba(15, 23, 42, 0.3) 60%, transparent 80%),
+    radial-gradient(100vmax 100vmax at 70% 70%, rgba(30, 144, 255, 0.5) 0%, rgba(15, 23, 42, 0.4) 65%, transparent 85%),
+    radial-gradient(85vmax 85vmax at 50% 10%, rgba(37, 99, 235, 0.45) 0%, rgba(30, 58, 138, 0.3) 60%, transparent 80%),
+    radial-gradient(95vmax 95vmax at 10% 50%, rgba(30, 144, 255, 0.4) 0%, rgba(15, 23, 42, 0.35) 60%, transparent 80%),
+    radial-gradient(120vmax 120vmax at 50% 50%, rgba(15, 23, 42, 0.5) 0%, rgba(2, 6, 23, 0.8) 50%, rgba(0, 0, 0, 0.95) 100%);
 
   background-repeat: no-repeat;
 
-  /* Scroll-driven "flow" - Enhanced with more layers */
-  /* Allowing more movement range for visible animation */
+  /* Scroll-driven smooth animation */
   background-position:
-    calc(10% + var(--s3)) calc(15% + var(--s1)),
-    calc(90% + var(--s2)) calc(10% + var(--s4)),
-    calc(20% + var(--s1)) calc(90% + var(--s2)),
-    calc(85% + var(--s4)) calc(85% + var(--s3)),
-    50% calc(50% + var(--s5)),
-    calc(60% + var(--s1)) calc(30% + var(--s2)),
-    calc(30% + var(--s3)) calc(60% + var(--s4)),
+    calc(20% + var(--s1) + var(--scroll-y1)) calc(20% + var(--s2) + var(--scroll-y2)),
+    calc(80% + var(--s3) + var(--scroll-y3)) calc(30% + var(--s4) + var(--scroll-y4)),
+    calc(30% + var(--s5) + var(--scroll-y5)) calc(80% + var(--s1) + var(--scroll-y1)),
+    calc(70% + var(--s2) + var(--scroll-y2)) calc(70% + var(--s3) + var(--scroll-y3)),
+    calc(50% + var(--s4) + var(--scroll-y4)) calc(10% + var(--s5) + var(--scroll-y5)),
+    calc(10% + var(--s1) + var(--scroll-y1)) calc(50% + var(--s2) + var(--scroll-y2)),
     center;
 
-  filter: saturate(130%) contrast(115%);
+  filter: saturate(125%) contrast(115%) brightness(0.95);
   transform: translateZ(0);
   will-change: background-position;
+  transition: background-position 0.1s ease-out;
 }
+
+/* Option 2: Dodgerblue & Teal/Cyan (Modern Tech) - Uncomment to use */
+/*
+body::before {
+  content: "";
+  position: fixed;
+  inset: -25%;
+  z-index: -1;
+  pointer-events: none;
+
+  background:
+    radial-gradient(80vmax 80vmax at 20% 20%, rgba(30, 144, 255, 0.6) 0%, rgba(6, 182, 212, 0.3) 60%, transparent 80%),
+    radial-gradient(90vmax 90vmax at 80% 30%, rgba(59, 130, 246, 0.55) 0%, rgba(20, 184, 166, 0.3) 60%, transparent 80%),
+    radial-gradient(70vmax 70vmax at 30% 80%, rgba(30, 144, 255, 0.5) 0%, rgba(15, 118, 110, 0.3) 60%, transparent 80%),
+    radial-gradient(100vmax 100vmax at 70% 70%, rgba(37, 99, 235, 0.45) 0%, rgba(15, 23, 42, 0.4) 65%, transparent 85%),
+    radial-gradient(85vmax 85vmax at 50% 10%, rgba(30, 144, 255, 0.4) 0%, rgba(6, 182, 212, 0.3) 60%, transparent 80%),
+    radial-gradient(95vmax 95vmax at 10% 50%, rgba(59, 130, 246, 0.35) 0%, rgba(15, 23, 42, 0.35) 60%, transparent 80%),
+    radial-gradient(120vmax 120vmax at 50% 50%, rgba(15, 23, 42, 0.5) 0%, rgba(2, 6, 23, 0.8) 50%, rgba(0, 0, 0, 0.95) 100%);
+
+  background-repeat: no-repeat;
+  background-position:
+    calc(20% + var(--s1) + var(--scroll-y1)) calc(20% + var(--s2) + var(--scroll-y2)),
+    calc(80% + var(--s3) + var(--scroll-y3)) calc(30% + var(--s4) + var(--scroll-y4)),
+    calc(30% + var(--s5) + var(--scroll-y5)) calc(80% + var(--s1) + var(--scroll-y1)),
+    calc(70% + var(--s2) + var(--scroll-y2)) calc(70% + var(--s3) + var(--scroll-y3)),
+    calc(50% + var(--s4) + var(--scroll-y4)) calc(10% + var(--s5) + var(--scroll-y5)),
+    calc(10% + var(--s1) + var(--scroll-y1)) calc(50% + var(--s2) + var(--scroll-y2)),
+    center;
+
+  filter: saturate(130%) contrast(115%) brightness(0.95);
+  transform: translateZ(0);
+  will-change: background-position;
+  transition: background-position 0.1s ease-out;
+}
+*/
+
+/* Option 3: Dodgerblue & Slate/Charcoal (Sophisticated) - Uncomment to use */
+/*
+body::before {
+  content: "";
+  position: fixed;
+  inset: -25%;
+  z-index: -1;
+  pointer-events: none;
+
+  background:
+    radial-gradient(80vmax 80vmax at 20% 20%, rgba(30, 144, 255, 0.6) 0%, rgba(51, 65, 85, 0.4) 60%, transparent 80%),
+    radial-gradient(90vmax 90vmax at 80% 30%, rgba(59, 130, 246, 0.55) 0%, rgba(30, 41, 59, 0.35) 60%, transparent 80%),
+    radial-gradient(70vmax 70vmax at 30% 80%, rgba(30, 144, 255, 0.5) 0%, rgba(15, 23, 42, 0.3) 60%, transparent 80%),
+    radial-gradient(100vmax 100vmax at 70% 70%, rgba(37, 99, 235, 0.45) 0%, rgba(15, 23, 42, 0.4) 65%, transparent 85%),
+    radial-gradient(85vmax 85vmax at 50% 10%, rgba(30, 144, 255, 0.4) 0%, rgba(51, 65, 85, 0.3) 60%, transparent 80%),
+    radial-gradient(95vmax 95vmax at 10% 50%, rgba(59, 130, 246, 0.35) 0%, rgba(15, 23, 42, 0.35) 60%, transparent 80%),
+    radial-gradient(120vmax 120vmax at 50% 50%, rgba(15, 23, 42, 0.5) 0%, rgba(2, 6, 23, 0.8) 50%, rgba(0, 0, 0, 0.95) 100%);
+
+  background-repeat: no-repeat;
+  background-position:
+    calc(20% + var(--s1) + var(--scroll-y1)) calc(20% + var(--s2) + var(--scroll-y2)),
+    calc(80% + var(--s3) + var(--scroll-y3)) calc(30% + var(--s4) + var(--scroll-y4)),
+    calc(30% + var(--s5) + var(--scroll-y5)) calc(80% + var(--s1) + var(--scroll-y1)),
+    calc(70% + var(--s2) + var(--scroll-y2)) calc(70% + var(--s3) + var(--scroll-y3)),
+    calc(50% + var(--s4) + var(--scroll-y4)) calc(10% + var(--s5) + var(--scroll-y5)),
+    calc(10% + var(--s1) + var(--scroll-y1)) calc(50% + var(--s2) + var(--scroll-y2)),
+    center;
+
+  filter: saturate(120%) contrast(110%) brightness(0.95);
+  transform: translateZ(0);
+  will-change: background-position;
+  transition: background-position 0.1s ease-out;
+}
+*/
+
+/* Option 2: Dark Teal & Deep Navy (Modern Tech) - Uncomment to use */
+/*
+body::before {
+  content: "";
+  position: fixed;
+  inset: -25%;
+  z-index: -1;
+  pointer-events: none;
+
+  background:
+    radial-gradient(80vmax 80vmax at 20% 20%, rgba(20, 184, 166, 0.5) 0%, rgba(15, 118, 110, 0.3) 60%, transparent 80%),
+    radial-gradient(90vmax 90vmax at 80% 30%, rgba(6, 182, 212, 0.45) 0%, rgba(14, 116, 144, 0.3) 60%, transparent 80%),
+    radial-gradient(70vmax 70vmax at 30% 80%, rgba(15, 118, 110, 0.4) 0%, rgba(2, 44, 34, 0.3) 60%, transparent 80%),
+    radial-gradient(100vmax 100vmax at 70% 70%, rgba(20, 184, 166, 0.35) 0%, rgba(15, 23, 42, 0.4) 65%, transparent 85%),
+    radial-gradient(85vmax 85vmax at 50% 10%, rgba(6, 182, 212, 0.3) 0%, rgba(30, 58, 138, 0.3) 60%, transparent 80%),
+    radial-gradient(95vmax 95vmax at 10% 50%, rgba(15, 118, 110, 0.25) 0%, rgba(15, 23, 42, 0.35) 60%, transparent 80%),
+    radial-gradient(120vmax 120vmax at 50% 50%, rgba(15, 23, 42, 0.5) 0%, rgba(2, 6, 23, 0.8) 50%, rgba(0, 0, 0, 0.95) 100%);
+
+  background-repeat: no-repeat;
+  background-position:
+    calc(20% + var(--s1) + var(--scroll-y1)) calc(20% + var(--s2) + var(--scroll-y2)),
+    calc(80% + var(--s3) + var(--scroll-y3)) calc(30% + var(--s4) + var(--scroll-y4)),
+    calc(30% + var(--s5) + var(--scroll-y5)) calc(80% + var(--s1) + var(--scroll-y1)),
+    calc(70% + var(--s2) + var(--scroll-y2)) calc(70% + var(--s3) + var(--scroll-y3)),
+    calc(50% + var(--s4) + var(--scroll-y4)) calc(10% + var(--s5) + var(--scroll-y5)),
+    calc(10% + var(--s1) + var(--scroll-y1)) calc(50% + var(--s2) + var(--scroll-y2)),
+    center;
+
+  filter: saturate(120%) contrast(110%) brightness(0.95);
+  transform: translateZ(0);
+  will-change: background-position;
+  transition: background-position 0.1s ease-out;
+}
+*/
+
+/* Option 3: Dark Magenta & Deep Purple (Vibrant Creative) - Uncomment to use */
+/*
+body::before {
+  content: "";
+  position: fixed;
+  inset: -25%;
+  z-index: -1;
+  pointer-events: none;
+
+  background:
+    radial-gradient(80vmax 80vmax at 20% 20%, rgba(219, 39, 119, 0.5) 0%, rgba(147, 51, 234, 0.3) 60%, transparent 80%),
+    radial-gradient(90vmax 90vmax at 80% 30%, rgba(236, 72, 153, 0.45) 0%, rgba(168, 85, 247, 0.3) 60%, transparent 80%),
+    radial-gradient(70vmax 70vmax at 30% 80%, rgba(147, 51, 234, 0.4) 0%, rgba(88, 28, 135, 0.3) 60%, transparent 80%),
+    radial-gradient(100vmax 100vmax at 70% 70%, rgba(219, 39, 119, 0.35) 0%, rgba(30, 27, 75, 0.4) 65%, transparent 85%),
+    radial-gradient(85vmax 85vmax at 50% 10%, rgba(236, 72, 153, 0.3) 0%, rgba(147, 51, 234, 0.3) 60%, transparent 80%),
+    radial-gradient(95vmax 95vmax at 10% 50%, rgba(168, 85, 247, 0.25) 0%, rgba(30, 27, 75, 0.35) 60%, transparent 80%),
+    radial-gradient(120vmax 120vmax at 50% 50%, rgba(30, 27, 75, 0.5) 0%, rgba(2, 6, 23, 0.8) 50%, rgba(0, 0, 0, 0.95) 100%);
+
+  background-repeat: no-repeat;
+  background-position:
+    calc(20% + var(--s1) + var(--scroll-y1)) calc(20% + var(--s2) + var(--scroll-y2)),
+    calc(80% + var(--s3) + var(--scroll-y3)) calc(30% + var(--s4) + var(--scroll-y4)),
+    calc(30% + var(--s5) + var(--scroll-y5)) calc(80% + var(--s1) + var(--scroll-y1)),
+    calc(70% + var(--s2) + var(--scroll-y2)) calc(70% + var(--s3) + var(--scroll-y3)),
+    calc(50% + var(--s4) + var(--scroll-y4)) calc(10% + var(--s5) + var(--scroll-y5)),
+    calc(10% + var(--s1) + var(--scroll-y1)) calc(50% + var(--s2) + var(--scroll-y2)),
+    center;
+
+  filter: saturate(130%) contrast(115%) brightness(0.9);
+  transform: translateZ(0);
+  will-change: background-position;
+  transition: background-position 0.1s ease-out;
+}
+*/
 
 ::selection {
   background: rgba(30, 144, 255, 0.25);
@@ -151,26 +297,37 @@ body::before {
   color: white !important;
 }
 
-/* Logo Marquee Animation */
+/* Logo Marquee Animation - Seamless infinite loop */
 @keyframes marquee {
   0% {
     transform: translateX(0);
   }
   100% {
-    transform: translateX(-50%);
+    transform: translateX(calc(-100% / 3));
+  }
+}
+
+@keyframes marquee-reverse {
+  0% {
+    transform: translateX(calc(-100% / 3));
+  }
+  100% {
+    transform: translateX(0);
   }
 }
 
 .animate-marquee {
-  animation: marquee 30s linear infinite;
+  animation: marquee 40s linear infinite;
   display: flex;
   width: fit-content;
+  will-change: transform;
 }
 
 .animate-marquee-reverse {
-  animation: marquee 35s linear infinite reverse;
+  animation: marquee-reverse 45s linear infinite;
   display: flex;
   width: fit-content;
+  will-change: transform;
 }
 
 /* Hero section animations */
