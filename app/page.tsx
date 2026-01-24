@@ -37,9 +37,9 @@ const EXPERIENCE = [
     link: "https://www.multivrse.digital/",
     isMultivrse: true,
     bullets: [
-      "Migrating organisation software from AWS to Akamai Linode",
-      "Heading outreach and organising founding client meetings",
-      "Structured data pipeline for multilingual RAG AI chatbot",
+      "Led cloud infrastructure migration from AWS to Akamai Linode, optimising cost, performance, and operational simplicity while maintaining service continuity.",
+      "Designed and implemented a multilingual RAG-based AI chatbot data pipeline, including architecture definition, model integration, and end-to-end technical documentation.",
+      "Drove early-stage business development through client outreach, founding customer meetings, and translation of client needs into scalable technical solutions.",
     ],
   },
   {
@@ -51,10 +51,10 @@ const EXPERIENCE = [
     isMultivrse: false,
     isAurm: true,
     bullets: [
-      "Structured FaceID service codebase; implemented gender detection via Base64 image inputs",
-      "Defined client transactions; built pipeline for vault cameras to capture and store recordings locally + cloud upload",
-      "Modelled MongoDB to support transactions in bay area + vault workflows",
-      "Automated vault recording for error/edge-case events",
+      "Designed and structured the FaceID service codebase, implementing a Base64-based gender detection pipeline and supporting secure identity workflows.",
+      "Defined client transaction logic and built an automated recording pipeline for onboarded vault cameras, enabling reliable local storage with cloud synchronisation.",
+      "Architected system and user event flows to trigger API endpoints, including AWS-based event-driven notification workflows for operational alerts.",
+      "Structured MongoDB schemas to support high-integrity client transactions across Aurm's Bay Area and Vault systems, with automated handling of error and edge-case recording events.",
     ],
   },
   {
