@@ -73,7 +73,7 @@ function hsla(h: number, s: number, l: number, a: number): string {
 
 export default function AnimatedRibbonBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animationFrameRef = useRef<number>();
+  const animationFrameRef = useRef<number | undefined>(undefined);
   const ribbonsRef = useRef<Ribbon[]>([]);
   const hueRef = useRef<number>(294);
   const hueForwardRef = useRef<boolean>(true);
