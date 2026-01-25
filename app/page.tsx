@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import AnimatedText from "./components/AnimatedText";
 import GlobalMouse3D from "./components/GlobalMouse3D";
 import AnimatedRibbonBackground from "./components/AnimatedRibbonBackground";
 
@@ -343,11 +342,6 @@ function HeroSection() {
               <h1 className="text-5xl font-extrabold tracking-tight sm:text-6xl lg:text-7xl xl:text-8xl text-white animate-slide-up hero-name-3d">
                 {PROFILE.name}
               </h1>
-              
-              {/* Animated role text - 3D mouse tracking - now below name */}
-              <div className="animate-slide-up-delay hero-text-3d">
-                <AnimatedText />
-              </div>
             </div>
           </GlobalMouse3D>
 
@@ -600,7 +594,7 @@ export default function Home() {
         <Section
           id="education"
           title="Education"
-          subtitle="Where I've spent (constructively) 4 years of my life."
+          subtitle="Where I've (constructively) spent 4 years of my life."
         >
           <div className="space-y-6">
             {EDUCATION.map((e, idx) => (
