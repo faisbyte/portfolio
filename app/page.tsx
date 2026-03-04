@@ -30,7 +30,7 @@ const EDUCATION = [
 
 const EXPERIENCE = [
   {
-    title: "Business Development & Technology Solutions Design Lead",
+    title: "Full Stack Developer & Technology Lead",
     org: "Sydney, New South Wales, Australia",
     period: "Oct 2025 - Present",
     image: "/multirvrse.png",
