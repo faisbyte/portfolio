@@ -32,13 +32,14 @@ const EXPERIENCE = [
   {
     title: "Full Stack Developer & Technology Lead",
     org: "Sydney, New South Wales, Australia",
-    period: "Oct 2025 - Present",
+    period: "Dec 2025 - Present",
     image: "/multirvrse.png",
     link: "https://www.multivrse.digital/",
     isMultivrse: true,
     bullets: [
       "Led cloud infrastructure migration from AWS to Akamai Linode, optimising cost, performance, and operational simplicity while maintaining service continuity.",
       "Designed and implemented a multilingual RAG-based AI chatbot data pipeline, including architecture definition, model integration, and end-to-end technical documentation.",
+      "Shipped and maintained a production web presence with CI/CD-driven deployments, performance optimisation, and end-to-end technical SEO (schema markup, redirects, indexing controls) to maximise organic discoverability.",
       "Drove early-stage business development through client outreach, founding customer meetings, and translation of client needs into scalable technical solutions.",
     ],
   },
