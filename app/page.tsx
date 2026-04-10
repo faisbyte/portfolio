@@ -1,16 +1,16 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import GlobalMouse3D from "./components/GlobalMouse3D";
-import AnimatedRibbonBackground from "./components/AnimatedRibbonBackground";
+import MeshBackground from "./components/MeshBackground";
 
-type Link = { label: string; href: string; external?: boolean };
+// ---------------------------------------------------------------------------
+// Data
+// ---------------------------------------------------------------------------
 
 const PROFILE = {
   name: "Faisal Naveed",
-  // update these 2 links
   links: {
-    linkedin: "https://www.linkedin.com/in/your-handle",
+    linkedin: "https://www.linkedin.com/in/faisal-naveed-32bb55288/",
     github: "https://github.com/your-handle",
     resume: "/resume.pdf",
   },
@@ -24,7 +24,7 @@ const EDUCATION = [
     period: "Jul 2023 - Jun 2027",
     image: "/usyd.svg",
     link: "https://www.sydney.edu.au/",
-    isEducation: true,
+    brand: "education" as const,
   },
 ];
 
@@ -35,7 +35,7 @@ const EXPERIENCE = [
     period: "Dec 2025 - Present",
     image: "/multirvrse.png",
     link: "https://www.multivrse.digital/",
-    isMultivrse: true,
+    brand: "multivrse" as const,
     bullets: [
       "Led cloud infrastructure migration from AWS to Akamai Linode, optimising cost, performance, and operational simplicity while maintaining service continuity.",
       "Designed and implemented a multilingual RAG-based AI chatbot data pipeline, including architecture definition, model integration, and end-to-end technical documentation.",
@@ -49,8 +49,7 @@ const EXPERIENCE = [
     period: "Jan 2026 - Mar 2026",
     image: "/aurm.svg",
     link: "https://aurm.in/",
-    isMultivrse: false,
-    isAurm: true,
+    brand: "aurm" as const,
     bullets: [
       "Designed and structured the FaceID service codebase, implementing a Base64-based gender detection pipeline and supporting secure identity workflows.",
       "Defined client transaction logic and built an automated recording pipeline for onboarded vault cameras, enabling reliable local storage with cloud synchronisation.",
@@ -64,9 +63,7 @@ const EXPERIENCE = [
     period: "Nov 2025 - Jan 2026",
     image: "/marquis.png",
     link: "https://www.marquiseducation.com.au/",
-    isMultivrse: false,
-    isAurm: false,
-    isMarquis: true,
+    brand: "marquis" as const,
     bullets: [
       "Coordinated strategic partnerships for a newly acquired EdTech startup in Abu Dhabi, supporting market entry, stakeholder alignment, and early growth initiatives.",
       "Led outreach and relationship development for the launch of university consultancy services in India, engaging institutions and prospective partners to establish local presence.",
@@ -80,653 +77,433 @@ const CERTIFICATIONS = [
   { title: "Quantium Data Analytics Simulation", meta: "ID: Fz3Mt4pmcNou8FZsC" },
 ];
 
-// Logo files from public/logos directory
 const LOGOS = [
-  "bitbucket.png",
-  "confluence.png",
-  "css.png",
-  "figma.png",
-  "github.png",
-  "html.png",
-  "java.png",
-  "jira.png",
-  "mongo.png",
-  "mysql.png",
-  "nextjs.png",
-  "npm.png",
-  "postgre.png",
-  "powerbi.png",
-  "python.png",
-  "R.png",
-  "react.png",
-  "sqlite.png",
-  "supabase.png",
-  "swift.png",
-  "tableau.png",
-  "ts.png",
-  "vercel.png",
+  "bitbucket.png","confluence.png","css.png","figma.png","github.png",
+  "html.png","java.png","jira.png","mongo.png","mysql.png","nextjs.png",
+  "npm.png","postgre.png","powerbi.png","python.png","R.png","react.png",
+  "sqlite.png","supabase.png","swift.png","tableau.png","ts.png","vercel.png",
 ];
 
-function Container({ children }: { children: React.ReactNode }) {
-  return <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">{children}</div>;
-}
+const VOLUNTEERING = [
+  {
+    title: "Technology Executive & Secretary",
+    org: "Sydney University Artificial Intelligence Association",
+    period: "Nov 2024 - Present",
+    image: "/suaia.jpeg",
+    link: "https://www.suaia.org/",
+  },
+  {
+    title: "Subcommittee Member",
+    org: "Sydney University Cyber Security Society",
+    period: "Jun 2024 - Oct 2024",
+    image: "/cybersoc.jpeg",
+    link: "https://www.linkedin.com/company/usyd-csec/?originalSubdomain=au",
+  },
+];
 
-// Hook for scroll-triggered animations
-function useScrollAnimation() {
-  const [isVisible, setIsVisible] = useState(false);
-  const ref = useRef<HTMLElement | null>(null);
+const NAV = [
+  { label: "Experience",     href: "#experience" },
+  { label: "Education",      href: "#education" },
+  { label: "Technologies",   href: "#technologies" },
+  { label: "Certifications", href: "#certifications" },
+  { label: "Volunteering",   href: "#volunteering" },
+  { label: "Resume",         href: "/resume.pdf", external: true },
+];
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+function useInView(options?: IntersectionObserverInit) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
-      },
-      { threshold: 0.1, rootMargin: "0px 0px -100px 0px" }
-    );
-
-    const currentRef = ref.current;
-    if (currentRef) {
-      observer.observe(currentRef);
-    }
-
-    return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef);
-      }
-    };
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { setInView(true); obs.disconnect(); }
+    }, { threshold: 0.08, rootMargin: "0px 0px -60px 0px", ...options });
+    obs.observe(el);
+    return () => obs.disconnect();
   }, []);
 
-  return { ref, isVisible };
+  return { ref, inView };
 }
 
-function Section({
-  id,
-  title,
-  subtitle,
-  children,
-}: {
-  id: string;
-  title: string;
-  subtitle?: string;
-  children: React.ReactNode;
-}) {
-  const { ref, isVisible } = useScrollAnimation();
+// ---------------------------------------------------------------------------
+// Small components
+// ---------------------------------------------------------------------------
+
+function Divider() {
+  return <div className="border-t border-white/[0.06] my-0" />;
+}
+
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="text-[0.62rem] font-semibold tracking-[0.2em] uppercase text-white/30 mb-6 lg:mb-8">
+      {children}
+    </p>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Nav
+// ---------------------------------------------------------------------------
+
+function Nav() {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handler = () => setScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", handler, { passive: true });
+    return () => window.removeEventListener("scroll", handler);
+  }, []);
 
   return (
-    <section 
-      ref={ref as React.RefObject<HTMLElement>}
-      id={id} 
-      className={`py-16 lg:py-24 transition-all duration-1000 ease-out ${
-        isVisible 
-          ? 'opacity-100 translate-y-0' 
-          : 'opacity-0 translate-y-8'
-      }`}
+    <header
+      className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
+      style={{
+        background: scrolled ? "rgba(5,5,5,0.7)" : "transparent",
+        backdropFilter: scrolled ? "blur(20px)" : "none",
+        borderBottom: scrolled ? "1px solid rgba(255,255,255,0.05)" : "1px solid transparent",
+      }}
     >
-      <div className="mb-10 lg:mb-16">
-        <div className={`inline-block mb-3 transition-all duration-700 delay-100 ${
-          isVisible 
-            ? 'opacity-100 translate-x-0' 
-            : 'opacity-0 -translate-x-4'
-        }`}>
-          <h2 className="text-3xl font-extrabold tracking-tight lg:text-4xl xl:text-5xl">{title}</h2>
-          <div className={`h-1 w-16 bg-gradient-to-r from-transparent via-white/50 to-transparent rounded-full mt-2 transition-all duration-700 delay-200 ${
-            isVisible 
-              ? 'opacity-100 scale-x-100' 
-              : 'opacity-0 scale-x-0'
-          }`}></div>
-        </div>
-        {subtitle ? (
-          <p className={`text-sm text-white/80 mt-4 lg:text-base lg:max-w-2xl transition-all duration-700 delay-150 ${
-            isVisible 
-              ? 'opacity-100 translate-y-0' 
-              : 'opacity-0 translate-y-4'
-          }`}>{subtitle}</p>
-        ) : null}
+      <div className="mx-auto max-w-7xl px-6 lg:px-10 flex items-center justify-between h-14">
+        <span className="text-xs font-semibold tracking-widest uppercase text-white/30 select-none">
+          FN
+        </span>
+        <nav className="hidden md:flex items-center gap-1">
+          {NAV.map((item) => (
+            <a
+              key={item.href}
+              href={item.href}
+              {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              className="px-3 py-1.5 text-[0.72rem] font-medium tracking-wide text-white/40 rounded-md transition-colors duration-200 hover:text-white hover:bg-white/[0.06]"
+            >
+              {item.label}
+            </a>
+          ))}
+        </nav>
       </div>
-      {children}
+    </header>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Hero
+// ---------------------------------------------------------------------------
+
+function Hero() {
+  const [mouse, setMouse] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      setMouse({
+        x: (e.clientX / window.innerWidth) * 2 - 1,
+        y: (e.clientY / window.innerHeight) * 2 - 1,
+      });
+    };
+    window.addEventListener("mousemove", handler);
+    return () => window.removeEventListener("mousemove", handler);
+  }, []);
+
+  return (
+    <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 overflow-hidden">
+      {/* name */}
+      <div
+        className="relative z-10 select-none"
+        style={{
+          transform: `perspective(1200px) rotateX(${mouse.y * -6}deg) rotateY(${mouse.x * 6}deg)`,
+          transition: "transform 0.12s ease-out",
+        }}
+      >
+        <h1
+          className="hero-name font-extrabold text-white"
+          style={{
+            textShadow: "0 0 120px rgba(129,140,248,0.15), 0 40px 80px rgba(0,0,0,0.6)",
+          }}
+        >
+          {PROFILE.name}
+        </h1>
+      </div>
+
+      {/* links row */}
+      <div className="relative z-10 mt-10 flex items-center gap-3 flex-wrap justify-center">
+        <a href={PROFILE.links.linkedin} target="_blank" rel="noopener noreferrer" className="hero-cta gap-2">
+          <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 fill-current" aria-hidden><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5ZM.5 23.5h4V7.98h-4V23.5ZM8.5 7.98h3.83v2.12h.05c.53-1.01 1.82-2.12 3.75-2.12 4.01 0 4.75 2.64 4.75 6.08v9.44h-4v-8.37c0-2-.04-4.57-2.79-4.57-2.79 0-3.22 2.18-3.22 4.43v8.51h-4V7.98Z"/></svg>
+          LinkedIn
+        </a>
+        <a href={PROFILE.links.resume} target="_blank" rel="noopener noreferrer" className="hero-cta gap-2">
+          <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 fill-current" aria-hidden><path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7l-5-5Zm1 7V3.5L18.5 9H15ZM8 13h8v2H8v-2Zm0 4h8v2H8v-2Zm0-8h6v2H8V9Z"/></svg>
+          Resume
+        </a>
+      </div>
+
+      {/* scroll hint */}
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/20">
+        <span className="text-[0.6rem] tracking-widest uppercase">Scroll</span>
+        <div className="w-px h-12 bg-gradient-to-b from-white/20 to-transparent" />
+      </div>
     </section>
   );
 }
 
-// Hook for card animations
-function useCardAnimation(delay: number = 0) {
-  const [isVisible, setIsVisible] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+// ---------------------------------------------------------------------------
+// Experience card
+// ---------------------------------------------------------------------------
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setTimeout(() => setIsVisible(true), delay);
-        }
-      },
-      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
-    );
-
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
-
-    return () => {
-      if (ref.current) {
-        observer.unobserve(ref.current);
-      }
-    };
-  }, [delay]);
-
-  return { ref, isVisible };
-}
-
-function Card({ 
-  children, 
-  className = "", 
-  featured = false, 
-  index = 0,
-  image = null,
-  link = null,
-  isMultivrse = false,
-  isAurm = false,
-  isEducation = false,
-  isMarquis = false
-}: { 
-  children: React.ReactNode; 
-  className?: string; 
-  featured?: boolean; 
-  index?: number;
-  image?: string | null;
-  link?: string | null;
-  isMultivrse?: boolean;
-  isAurm?: boolean;
-  isEducation?: boolean;
-  isMarquis?: boolean;
+function ExperienceCard({
+  item,
+  index,
+}: {
+  item: typeof EXPERIENCE[number];
+  index: number;
 }) {
-  const { ref, isVisible } = useCardAnimation(index * 100);
-
-  const cardContent = (
-    <div className={`flex gap-6 lg:gap-8 ${image ? 'flex-row' : ''}`}>
-      {image && (
-        <div className="flex-shrink-0">
-          <img 
-            src={image} 
-            alt={isMultivrse ? "Multivrse" : isEducation ? "University of Sydney" : "Company logo"} 
-            className={`object-contain rounded-lg ${
-              isEducation 
-                ? 'w-32 h-32 lg:w-40 lg:h-40' 
-                : 'w-24 h-24 lg:w-32 lg:h-32'
-            }`}
-          />
-        </div>
-      )}
-      <div className="flex-1">
-        {children}
-      </div>
-    </div>
-  );
-
-  const cardClasses = `group rounded-2xl border border-black/12 ${isMultivrse || isAurm || isEducation ? '' : 'bg-white/30'} backdrop-blur-lg p-6 lg:p-10 shadow-sm transition-all duration-700 hover:shadow-xl hover:-translate-y-1 ${
-    featured ? 'ring-2 ring-black/5' : ''
-  } ${
-    isMultivrse 
-      ? 'multivrse-card' 
-      : isAurm
-      ? 'aurm-card'
-      : isEducation
-      ? 'education-card'
-      : isMarquis
-      ? 'marquis-card'
-      : 'hover:bg-white/40'
-  } ${
-    isVisible 
-      ? 'opacity-100 translate-y-0 scale-100' 
-      : 'opacity-0 translate-y-8 scale-95'
-  } ${link ? 'cursor-pointer' : ''} ${className}`;
-
-  const cardElement = (
-    <div 
-      ref={ref}
-      className={cardClasses}
-    >
-      {cardContent}
-    </div>
-  );
-
-  if (link) {
-    return (
-      <a
-        href={link}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="block no-underline"
-      >
-        {cardElement}
-      </a>
-    );
-  }
-
-  return cardElement;
-}
-
-function HeroSection() {
-  const [scrollY, setScrollY] = useState(0);
-  const heroRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // Parallax effect based on scroll
-  const parallaxOffset = Math.min(scrollY * 0.5, 200);
-  const opacity = Math.max(1 - scrollY / 400, 0.3);
-  const scale = Math.max(1 - scrollY / 1000, 0.8);
+  const { ref, inView } = useInView();
 
   return (
-    <Container>
-      <div 
-        ref={heroRef}
-        className="min-h-[100vh] flex flex-col items-center justify-center text-center gap-8 lg:gap-12 transition-all duration-300 relative z-10"
-        style={{
-          transform: `translateY(${parallaxOffset}px) scale(${scale})`,
-          opacity: opacity,
-        }}
-      >
-        <div className="space-y-8 lg:space-y-12 animate-fade-in">
-          {/* Animated name with entrance effect - 3D mouse tracking */}
-          <GlobalMouse3D>
-            <div className="space-y-4">
-              <h1 className="text-5xl font-extrabold tracking-tight sm:text-6xl lg:text-7xl xl:text-8xl text-white animate-slide-up hero-name-3d">
-                {PROFILE.name}
-              </h1>
+    <div
+      ref={ref}
+      className={`card-base card-${item.brand} border rounded-2xl p-7 lg:p-9 transition-all duration-700`}
+      style={{
+        opacity: inView ? 1 : 0,
+        transform: inView ? "translateY(0)" : "translateY(20px)",
+        transitionDelay: `${index * 80}ms`,
+      }}
+    >
+      <a href={item.link} target="_blank" rel="noopener noreferrer" className="block">
+        <div className="flex gap-6 items-start mb-6">
+          <img
+            src={item.image}
+            alt={item.org}
+            className="w-20 h-20 object-contain rounded-xl flex-shrink-0 opacity-95"
+          />
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
+              <h3 className="text-sm font-semibold text-white leading-snug">{item.title}</h3>
+              <span className="text-[0.65rem] text-white/30 font-mono whitespace-nowrap">{item.period}</span>
             </div>
-          </GlobalMouse3D>
-
-          {/* Scroll indicator */}
-          <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
-            <div className="flex flex-col items-center gap-2">
-              <span className="text-sm text-white/70">Scroll to explore</span>
-              <svg
-                className="w-6 h-6 text-white/70"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-              </svg>
-            </div>
+            <p className="text-xs text-white/40 mt-0.5">{item.org}</p>
           </div>
         </div>
-      </div>
-    </Container>
+      </a>
+      <ul className="space-y-2.5">
+        {item.bullets.map((b) => (
+          <li key={b} className="flex gap-3 text-[0.78rem] text-white/55 leading-relaxed">
+            <span className="text-white/20 mt-0.5 flex-shrink-0 text-[0.6rem]">&#9632;</span>
+            {b}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
-function Pill({ children }: { children: React.ReactNode }) {
+// ---------------------------------------------------------------------------
+// Education card
+// ---------------------------------------------------------------------------
+
+function EducationCard({ item }: { item: typeof EDUCATION[number] }) {
+  const { ref, inView } = useInView();
+
   return (
-    <span
-      className="
-        inline-flex items-center
-        rounded-full px-4 py-1.5
-        text-xs font-medium
-        border border-black/12
-        bg-white/35 backdrop-blur-md
-        text-white
-        transition-all duration-300
-        hover:bg-black hover:text-white hover:scale-105
-      "
+    <div
+      ref={ref}
+      className={`card-base card-${item.brand} border rounded-2xl p-7 lg:p-9 transition-all duration-700`}
+      style={{ opacity: inView ? 1 : 0, transform: inView ? "translateY(0)" : "translateY(20px)" }}
     >
-      {children}
-    </span>
+      <a href={item.link} target="_blank" rel="noopener noreferrer" className="flex gap-6 items-start">
+        <img
+          src={item.image}
+          alt={item.org}
+          className="w-20 h-20 object-contain rounded-xl flex-shrink-0 opacity-95"
+        />
+        <div className="flex-1 min-w-0">
+          <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
+            <h3 className="text-sm font-semibold text-white leading-snug">{item.title}</h3>
+            <span className="text-[0.65rem] text-white/30 font-mono whitespace-nowrap">{item.period}</span>
+          </div>
+          {item.subtitle && (
+            <p className="text-xs text-white/40 mt-0.5">{item.subtitle}</p>
+          )}
+          <p className="text-xs text-white/30 mt-0.5">{item.org}</p>
+        </div>
+      </a>
+    </div>
   );
 }
 
-function IconLinkedIn() {
+// ---------------------------------------------------------------------------
+// Volunteering card
+// ---------------------------------------------------------------------------
+
+function VolunteerCard({ item, index }: { item: typeof VOLUNTEERING[number]; index: number }) {
+  const { ref, inView } = useInView();
+
   return (
-    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor" aria-hidden="true">
-      <path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5ZM.5 23.5h4V7.98h-4V23.5ZM8.5 7.98h3.83v2.12h.05c.53-1.01 1.82-2.12 3.75-2.12 4.01 0 4.75 2.64 4.75 6.08v9.44h-4v-8.37c0-2-.04-4.57-2.79-4.57-2.79 0-3.22 2.18-3.22 4.43v8.51h-4V7.98Z" />
-    </svg>
+    <div
+      ref={ref}
+      className="card-base border rounded-2xl p-7 lg:p-9 transition-all duration-700"
+      style={{
+        opacity: inView ? 1 : 0,
+        transform: inView ? "translateY(0)" : "translateY(20px)",
+        transitionDelay: `${index * 80}ms`,
+      }}
+    >
+      <a href={item.link} target="_blank" rel="noopener noreferrer" className="flex gap-5 items-start">
+        <img
+          src={item.image}
+          alt={item.org}
+          className="w-16 h-16 object-contain rounded-xl flex-shrink-0 opacity-95"
+        />
+        <div className="flex-1 min-w-0">
+          <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
+            <h3 className="text-sm font-semibold text-white leading-snug">{item.title}</h3>
+            <span className="text-[0.65rem] text-white/30 font-mono whitespace-nowrap">{item.period}</span>
+          </div>
+          <p className="text-xs text-white/40 mt-0.5">{item.org}</p>
+        </div>
+      </a>
+    </div>
   );
 }
 
-function IconGitHub() {
+// ---------------------------------------------------------------------------
+// Certifications
+// ---------------------------------------------------------------------------
+
+function CertCard({ item, index }: { item: typeof CERTIFICATIONS[number]; index: number }) {
+  const { ref, inView } = useInView();
+
   return (
-    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor" aria-hidden="true">
-      <path d="M12 .5C5.73.5.75 5.74.75 12.22c0 5.18 3.31 9.57 7.9 11.12.58.11.79-.26.79-.57v-2.05c-3.22.71-3.9-1.6-3.9-1.6-.52-1.37-1.27-1.74-1.27-1.74-1.04-.73.08-.71.08-.71 1.15.08 1.76 1.2 1.76 1.2 1.02 1.78 2.67 1.26 3.32.96.1-.76.4-1.26.72-1.55-2.57-.3-5.28-1.32-5.28-5.87 0-1.3.45-2.36 1.18-3.19-.12-.3-.51-1.52.11-3.18 0 0 .97-.32 3.18 1.22a10.7 10.7 0 0 1 2.9-.4c.98 0 1.97.14 2.9.4 2.2-1.54 3.17-1.22 3.17-1.22.63 1.66.24 2.88.12 3.18.73.83 1.17 1.89 1.17 3.19 0 4.56-2.72 5.56-5.31 5.86.41.37.78 1.08.78 2.17v3.22c0 .31.21.68.8.57 4.58-1.55 7.89-5.94 7.89-11.12C23.25 5.74 18.27.5 12 .5Z" />
-    </svg>
+    <div
+      ref={ref}
+      className="card-base border rounded-2xl p-7 transition-all duration-700"
+      style={{
+        opacity: inView ? 1 : 0,
+        transform: inView ? "translateY(0)" : "translateY(20px)",
+        transitionDelay: `${index * 80}ms`,
+      }}
+    >
+      <h3 className="text-sm font-semibold text-white leading-snug mb-2">{item.title}</h3>
+      <p className="text-[0.65rem] text-white/30 font-mono">{item.meta}</p>
+    </div>
   );
 }
 
-function IconPaper() {
+// ---------------------------------------------------------------------------
+// Technologies marquee
+// ---------------------------------------------------------------------------
+
+function Technologies() {
+  const { ref, inView } = useInView();
+
   return (
-    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor" aria-hidden="true">
-      <path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7l-5-5Zm1 7V3.5L18.5 9H15ZM8 13h8v2H8v-2Zm0 4h8v2H8v-2Zm0-8h6v2H8V9Z" />
-    </svg>
+    <div
+      ref={ref}
+      className="transition-all duration-700"
+      style={{ opacity: inView ? 1 : 0, transform: inView ? "translateY(0)" : "translateY(20px)" }}
+    >
+      <div className="flex overflow-hidden py-4">
+        <div className="flex animate-marquee gap-10">
+          {[...LOGOS, ...LOGOS, ...LOGOS].map((logo, i) => (
+            <div key={i} className="flex-shrink-0">
+              <img
+                src={`/logos/${logo}`}
+                alt={logo.replace(".png", "")}
+                className="h-14 w-14 lg:h-16 lg:w-16 object-contain"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }
+
+// ---------------------------------------------------------------------------
+// Page section wrapper
+// ---------------------------------------------------------------------------
+
+function PageSection({
+  id,
+  label,
+  children,
+}: {
+  id: string;
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <>
+      <Divider />
+      <section id={id} className="py-20 lg:py-28">
+        <div className="mx-auto max-w-7xl px-6 lg:px-10">
+          <SectionLabel>{label}</SectionLabel>
+          {children}
+        </div>
+      </section>
+    </>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Page
+// ---------------------------------------------------------------------------
 
 export default function Home() {
-  // Dynamic animated gradient background with randomized movement + scroll-based animation
-  useEffect(() => {
-    // Only run on client side after hydration
-    if (typeof window === 'undefined') return;
-
-    const root = document.documentElement;
-    let animationFrameId: number;
-    let startTime = Date.now();
-    let lastScrollY = 0;
-
-    // Initialize random offsets for each gradient layer with faster, more visible speeds
-    const offsets = {
-      s1: { base: Math.random() * 3, speed: 0.6 + Math.random() * 0.3, phase: Math.random() * Math.PI * 2 },
-      s2: { base: Math.random() * 3, speed: 0.5 + Math.random() * 0.3, phase: Math.random() * Math.PI * 2 },
-      s3: { base: Math.random() * 3, speed: 0.7 + Math.random() * 0.3, phase: Math.random() * Math.PI * 2 },
-      s4: { base: Math.random() * 3, speed: 0.55 + Math.random() * 0.3, phase: Math.random() * Math.PI * 2 },
-      s5: { base: Math.random() * 3, speed: 0.65 + Math.random() * 0.3, phase: Math.random() * Math.PI * 2 },
-    };
-
-    // Scroll handler for smooth gradient movement
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      const scrollProgress = scrollY / (document.documentElement.scrollHeight - window.innerHeight);
-      
-      // Smooth scroll-based offsets - different directions for each layer
-      const scrollMultiplier = 30; // Adjust for more/less movement
-      root.style.setProperty("--scroll-y1", `${Math.sin(scrollProgress * Math.PI * 2) * scrollMultiplier}px`);
-      root.style.setProperty("--scroll-y2", `${Math.cos(scrollProgress * Math.PI * 2) * scrollMultiplier}px`);
-      root.style.setProperty("--scroll-y3", `${Math.sin(scrollProgress * Math.PI * 3) * scrollMultiplier * 0.8}px`);
-      root.style.setProperty("--scroll-y4", `${Math.cos(scrollProgress * Math.PI * 3) * scrollMultiplier * 0.8}px`);
-      root.style.setProperty("--scroll-y5", `${Math.sin(scrollProgress * Math.PI * 1.5) * scrollMultiplier * 0.6}px`);
-      
-      lastScrollY = scrollY;
-    };
-
-    const animate = () => {
-      const elapsed = (Date.now() - startTime) / 1000; // Time in seconds
-      const vw = window.innerWidth / 100;
-      const vh = window.innerHeight / 100;
-
-      // Enhanced time-based animation with more visible movement
-      // Increased amplitude and speed for dynamic, cool-looking animation
-      const maxOffset = 25; // Increased for more visible movement
-      const amplitude = 12; // Increased amplitude for more dynamic movement
-      
-      const s1 = Math.max(-maxOffset, Math.min(maxOffset, (offsets.s1.base + Math.sin(elapsed * offsets.s1.speed + offsets.s1.phase) * amplitude) * vw));
-      const s2 = Math.max(-maxOffset, Math.min(maxOffset, (offsets.s2.base + Math.sin(elapsed * offsets.s2.speed + offsets.s2.phase) * amplitude) * vw));
-      const s3 = Math.max(-maxOffset, Math.min(maxOffset, (offsets.s3.base + Math.sin(elapsed * offsets.s3.speed + offsets.s3.phase) * amplitude) * vw));
-      const s4 = Math.max(-maxOffset, Math.min(maxOffset, (offsets.s4.base + Math.sin(elapsed * offsets.s4.speed + offsets.s4.phase) * amplitude) * vw));
-      const s5 = Math.max(-maxOffset, Math.min(maxOffset, (offsets.s5.base + Math.sin(elapsed * offsets.s5.speed + offsets.s5.phase) * amplitude) * vh));
-
-      root.style.setProperty("--s1", `${s1}px`);
-      root.style.setProperty("--s2", `${s2}px`);
-      root.style.setProperty("--s3", `${s3}px`);
-      root.style.setProperty("--s4", `${s4}px`);
-      root.style.setProperty("--s5", `${s5}px`);
-
-      animationFrameId = requestAnimationFrame(animate);
-    };
-
-    // Start animation immediately
-    animate();
-    
-    // Add scroll listener for smooth gradient movement
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll(); // Initial call
-
-    return () => {
-      if (animationFrameId) {
-        cancelAnimationFrame(animationFrameId);
-      }
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
-  // TODO: Update the resume file path below when you have the file ready
-  const RESUME_PATH = "/resume.pdf"; // Update this path with your actual resume file path
-
-  const nav = [
-    { label: "Experience", href: "#experience" },
-    { label: "Education", href: "#education" },
-    { label: "Technologies", href: "#technologies" },
-    { label: "Certifications", href: "#certifications" },
-    { label: "Volunteering", href: "#volunteering" },
-    { label: "Resume", href: RESUME_PATH, external: true },
-  ];
-
-  const navBtn =
-    "relative rounded-full px-5 py-2.5 text-sm font-medium tracking-wide border border-white/20 bg-white/35 backdrop-blur-md shadow-sm text-white transition-all duration-300 hover:bg-white hover:text-black hover:scale-105 hover:shadow-md active:scale-95";
-
-
-  const [scrollProgress, setScrollProgress] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const windowHeight = window.innerHeight;
-      const documentHeight = document.documentElement.scrollHeight;
-      const scrollTop = window.scrollY;
-      const progress = scrollTop / (documentHeight - windowHeight);
-      setScrollProgress(Math.min(progress, 1));
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll(); // Initial call
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   return (
-    <div className="min-h-screen">
-      {/* Animated Ribbon Background */}
-      <AnimatedRibbonBackground />
-      
-      {/* Scroll progress indicator */}
-      <div className="fixed top-0 left-0 right-0 h-1 bg-black/5 z-50">
-        <div 
-          className="h-full bg-gradient-to-r from-transparent via-black/20 to-transparent transition-all duration-150"
-          style={{ width: `${scrollProgress * 100}%` }}
-        />
-      </div>
+    <div className="relative min-h-screen">
+      <MeshBackground />
 
-      {/* Modern floating navigation */}
-      <div className="sticky top-4 z-50 mt-4 lg:top-6">
-        <Container>
-          <div className="flex items-center justify-center">
-            <nav className="flex flex-wrap items-center justify-center gap-2.5 lg:gap-3 rounded-full px-4 py-3 border border-black/10 bg-white/30 backdrop-blur-xl shadow-lg nav-container">
-              {nav.map((item) => (
-                <a 
-                  key={item.href} 
-                  href={item.href} 
-                  className={navBtn}
-                  {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                >
-                  {item.label}
-                </a>
-              ))}
-            </nav>
-          </div>
-        </Container>
-      </div>
+      {/* All foreground content sits above the overlay */}
+      <div className="relative z-10">
+        <Nav />
 
-      {/* Refined hero section with scroll animation */}
-      <HeroSection />
+        <Hero />
 
-      {/* Redesigned content sections */}
-      <Container>
-        <Section
-          id="experience"
-          title="Experience"
-          subtitle="Roles where I shipped real systems and owned deliverables."
-        >
-          <div className="space-y-6">
-            {EXPERIENCE.map((x, idx) => (
-              <Card 
-                key={x.title + x.org} 
-                featured={idx === 0} 
-                index={idx}
-                image={x.image || null}
-                link={x.link || null}
-                isMultivrse={x.isMultivrse || false}
-                isAurm={x.isAurm || false}
-                isMarquis={x.isMarquis || false}
-              >
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                  <div className="flex-1 space-y-1">
-                    <h3 className="text-lg font-bold lg:text-xl transition-colors duration-700 text-white">{x.title}</h3>
-                    <p className="text-sm text-white/90 lg:text-base transition-colors duration-700">{x.org}</p>
-                  </div>
-                  <div className={`text-xs font-medium text-white/80 lg:text-sm whitespace-nowrap transition-colors duration-700 period ${x.isMultivrse ? '' : ''}`}>{x.period}</div>
-                </div>
-                <ul className="mt-5 space-y-2 list-disc pl-5 text-sm text-white/90 lg:text-base lg:space-y-2.5">
-                  {x.bullets.map((b) => (
-                    <li key={b} className="leading-relaxed transition-colors duration-700">{b}</li>
-                  ))}
-                </ul>
-              </Card>
+        <PageSection id="experience" label="Experience">
+          <div className="space-y-5">
+            {EXPERIENCE.map((item, i) => (
+              <ExperienceCard key={item.title} item={item} index={i} />
             ))}
           </div>
-        </Section>
+        </PageSection>
 
-        <Section
-          id="education"
-          title="Education"
-          subtitle="Where I've (constructively) spent 4 years of my life."
-        >
-          <div className="space-y-6">
-            {EDUCATION.map((e, idx) => (
-              <Card 
-                key={e.title} 
-                index={idx}
-                image={e.image || null}
-                link={e.link || null}
-                isEducation={e.isEducation || false}
-              >
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                  <div className="flex-1 space-y-1">
-                    <h3 className="text-lg font-bold lg:text-xl transition-colors duration-700 text-white">{e.title}</h3>
-                    {e.subtitle && (
-                      <p className="text-sm text-white/80 lg:text-base transition-colors duration-700">{e.subtitle}</p>
-                    )}
-                    <p className="text-sm text-white/90 lg:text-base transition-colors duration-700">{e.org}</p>
-                  </div>
-                  <div className="text-xs font-medium text-white/80 lg:text-sm whitespace-nowrap transition-colors duration-700 period">{e.period}</div>
-                </div>
-              </Card>
+        <PageSection id="education" label="Education">
+          <div className="space-y-5">
+            {EDUCATION.map((item) => (
+              <EducationCard key={item.title} item={item} />
             ))}
           </div>
-        </Section>
+        </PageSection>
 
-        <Section
-          id="technologies"
-          title="Technologies"
-          subtitle="Languages, frameworks, and tools I've used."
-        >
-          <div className="relative overflow-hidden py-8">
-            {/* Logo Marquee - 2 rows, flowing left to right - seamless infinite loop */}
-            <div className="flex flex-col gap-12">
-              {/* First Row - flows left to right */}
-              <div className="flex overflow-hidden">
-                <div className="flex animate-marquee gap-12">
-                  {[...LOGOS, ...LOGOS, ...LOGOS].map((logo, idx) => (
-                    <div key={`row1-${idx}`} className="flex-shrink-0">
-                      <img 
-                        src={`/logos/${logo}`} 
-                        alt={logo.replace('.png', '')} 
-                        className="h-20 w-20 object-contain opacity-80 transition-opacity hover:opacity-100 lg:h-28 lg:w-28"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-              {/* Second Row - flows right to left (reverse) with offset to show different logos */}
-              <div className="flex overflow-hidden">
-                <div className="flex animate-marquee-reverse gap-12">
-                  {/* Offset the second row by half the array length to show different logos */}
-                  {[...LOGOS.slice(Math.floor(LOGOS.length / 2)), ...LOGOS, ...LOGOS, ...LOGOS.slice(0, Math.floor(LOGOS.length / 2))].map((logo, idx) => (
-                    <div key={`row2-${idx}`} className="flex-shrink-0">
-                      <img 
-                        src={`/logos/${logo}`} 
-                        alt={logo.replace('.png', '')} 
-                        className="h-20 w-20 object-contain opacity-80 transition-opacity hover:opacity-100 lg:h-28 lg:w-28"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </Section>
+        <PageSection id="technologies" label="Technologies">
+          <Technologies />
+        </PageSection>
 
-        <Section
-          id="certifications"
-          title="Certifications"
-          subtitle="Credentials and programs completed."
-        >
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
-            {CERTIFICATIONS.map((c, idx) => (
-              <Card key={c.title} index={idx}>
-                <h3 className="text-base font-bold mb-2 lg:text-lg">{c.title}</h3>
-                <p className="text-xs text-white/80 lg:text-sm">{c.meta}</p>
-              </Card>
+        <PageSection id="certifications" label="Certifications">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {CERTIFICATIONS.map((item, i) => (
+              <CertCard key={item.title} item={item} index={i} />
             ))}
           </div>
-        </Section>
+        </PageSection>
 
-        <Section
-          id="volunteering"
-          title="Volunteering"
-          subtitle="Clubs and Societies I've been a part of during my degree."
-        >
-          <div className="space-y-6">
-            <Card 
-              index={0}
-              image="/suaia.jpeg"
-              link="https://www.suaia.org/"
-            >
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                <div className="flex-1 space-y-1">
-                  <h3 className="text-lg font-bold lg:text-xl transition-colors duration-700 text-white">Technology Executive & Secretary</h3>
-                  <p className="text-sm text-white/90 lg:text-base transition-colors duration-700">Sydney University Artificial Intelligence Association</p>
-                </div>
-                <div className="text-xs font-medium text-white/80 lg:text-sm whitespace-nowrap transition-colors duration-700 period">Nov 2024 - Present</div>
-              </div>
-            </Card>
-            <Card 
-              index={1}
-              image="/cybersoc.jpeg"
-              link="https://www.linkedin.com/company/usyd-csec/?originalSubdomain=au"
-            >
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                <div className="flex-1 space-y-1">
-                  <h3 className="text-lg font-bold lg:text-xl transition-colors duration-700 text-white">Subcommittee Member</h3>
-                  <p className="text-sm text-white/90 lg:text-base transition-colors duration-700">Sydney University Cyber Security Society</p>
-                </div>
-                <div className="text-xs font-medium text-white/80 lg:text-sm whitespace-nowrap transition-colors duration-700 period">June 2024 - Oct 2024</div>
-              </div>
-            </Card>
+        <PageSection id="volunteering" label="Volunteering">
+          <div className="space-y-5">
+            {VOLUNTEERING.map((item, i) => (
+              <VolunteerCard key={item.title} item={item} index={i} />
+            ))}
           </div>
-        </Section>
+        </PageSection>
 
-        <footer className="py-12 text-center text-xs text-white/60 lg:text-sm lg:py-16">
-          <a
-            href="https://www.linkedin.com/in/faisal-naveed-32bb55288/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block transition-opacity hover:opacity-80"
-          >
-            <img
-              src="/linkedin.png"
-              alt="LinkedIn"
-              className="h-12 w-auto lg:h-16"
-            />
-          </a>
+        <Divider />
+        <footer className="py-14 flex justify-center">
+          <p className="text-[0.65rem] tracking-widest uppercase text-white/15">Faisal Naveed</p>
         </footer>
-      </Container>
+      </div>
     </div>
   );
 }
