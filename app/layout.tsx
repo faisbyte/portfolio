@@ -31,9 +31,9 @@ export default function RootLayout({
 export const metadata: Metadata = {
   icons: {
     icon: [
-      { url: "/pic2.png", sizes: "any" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
     ],
-    shortcut: "/pic2.png",
-    apple: "/pic2.png",
+    shortcut: "/favicon.svg",
+    apple: "/favicon.svg",
   },
 };
