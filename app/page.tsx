@@ -32,7 +32,7 @@ const EXPERIENCE = [
   {
     title: "Full Stack Developer & Technology Lead",
     org: "Sydney, New South Wales, Australia",
-    period: "Dec 2025 - Present",
+    period: "Dec 2025 - Apr 2026",
     image: "/multirvrse.png",
     link: "https://www.multivrse.digital/",
     brand: "multivrse" as const,
@@ -74,11 +74,11 @@ const EXPERIENCE = [
 const CERTIFICATIONS = [
   { title: "Google Advanced Data Analytics Professional Certificate", meta: "ID: IEWYXOK2W89R" },
   { title: "Google Machine Learning Professional Certificate", meta: "ID: PY6P4N95AU86" },
-  { title: "Quantium Data Analytics Simulation", meta: "ID: Fz3Mt4pmcNou8FZsC" },
+  { title: "AWS Academy Certified Cloud Architect", meta: "ID: cce674f9ae47" },
 ];
 
 const LOGOS = [
-  "bitbucket.png","confluence.png","css.png","figma.png","github.png",
+  "aws.webp","bitbucket.png","confluence.png","css.png","figma.png","github.png",
   "html.png","java.png","jira.png","mongo.png","mysql.png","nextjs.png",
   "npm.png","postgre.png","powerbi.png","python.png","R.png","react.png",
   "sqlite.png","supabase.png","swift.png","tableau.png","ts.png","vercel.png",
@@ -86,9 +86,9 @@ const LOGOS = [
 
 const VOLUNTEERING = [
   {
-    title: "Technology Executive & Secretary",
+    title: "Founding Member & Treasurer",
     org: "Sydney University Artificial Intelligence Association",
-    period: "Nov 2024 - Present",
+    period: "Dec 2024 - Present",
     image: "/suaia.jpeg",
     link: "https://www.suaia.org/",
   },
