@@ -19,7 +19,7 @@ const PROFILE = {
 const EDUCATION = [
   {
     title: "Bachelor of Advanced Computing (Honours)",
-    subtitle: "Computational Data Science & Business Information Systems",
+    subtitle: "Computational Data Science",
     org: "The University of Sydney",
     period: "Jul 2023 - Jun 2027",
     image: "/usyd.svg",
@@ -30,44 +30,31 @@ const EDUCATION = [
 
 const EXPERIENCE = [
   {
-    title: "Full Stack Developer & Technology Lead",
-    org: "Sydney, New South Wales, Australia",
+    title: "Co-Founder",
+    company: "Mudivu",
+    location: "Bangalore, Karnataka, India",
+    period: "Jun 2026 - Present",
+    image: "/mudivu-mark.svg",
+    link: "https://www.mudivu.in/",
+    brand: "mudivu" as const,
+  },
+  {
+    title: "Full Stack Developer Intern",
+    company: "Multivrse Digital",
+    location: "Sydney, New South Wales, Australia",
     period: "Dec 2025 - Apr 2026",
     image: "/multirvrse.png",
     link: "https://www.multivrse.digital/",
     brand: "multivrse" as const,
-    bullets: [
-      "Led cloud infrastructure migration from AWS to Akamai Linode, optimising cost, performance, and operational simplicity while maintaining service continuity.",
-      "Designed and implemented a multilingual RAG-based AI chatbot data pipeline, including architecture definition, model integration, and end-to-end technical documentation.",
-      "Shipped and maintained a production web presence with CI/CD-driven deployments, performance optimisation, and end-to-end technical SEO (schema markup, redirects, indexing controls) to maximise organic discoverability.",
-      "Drove early-stage business development through client outreach, founding customer meetings, and translation of client needs into scalable technical solutions.",
-    ],
   },
   {
-    title: "Software Developer",
-    org: "Bangalore, Karnataka, India",
+    title: "Software Developer Intern",
+    company: "Aurm",
+    location: "Bangalore, Karnataka, India",
     period: "Jan 2026 - Mar 2026",
     image: "/aurm.svg",
     link: "https://aurm.in/",
     brand: "aurm" as const,
-    bullets: [
-      "Designed and structured the FaceID service codebase, implementing a Base64-based gender detection pipeline and supporting secure identity workflows.",
-      "Defined client transaction logic and built an automated recording pipeline for onboarded vault cameras, enabling reliable local storage with cloud synchronisation.",
-      "Architected system and user event flows to trigger API endpoints, including AWS-based event-driven notification workflows for operational alerts.",
-      "Structured MongoDB schemas to support high-integrity client transactions across Aurm's Bay Area and Vault systems, with automated handling of error and edge-case recording events.",
-    ],
-  },
-  {
-    title: "Business Development Executive",
-    org: "Sydney, New South Wales, Australia (Remote)",
-    period: "Nov 2025 - Jan 2026",
-    image: "/marquis.png",
-    link: "https://www.marquiseducation.com.au/",
-    brand: "marquis" as const,
-    bullets: [
-      "Coordinated strategic partnerships for a newly acquired EdTech startup in Abu Dhabi, supporting market entry, stakeholder alignment, and early growth initiatives.",
-      "Led outreach and relationship development for the launch of university consultancy services in India, engaging institutions and prospective partners to establish local presence.",
-    ],
   },
 ];
 
@@ -78,10 +65,11 @@ const CERTIFICATIONS = [
 ];
 
 const LOGOS = [
-  "aws.webp","bitbucket.png","confluence.png","css.png","figma.png","github.png",
-  "html.png","java.png","jira.png","mongo.png","mysql.png","nextjs.png",
-  "npm.png","postgre.png","powerbi.png","python.png","R.png","react.png",
-  "sqlite.png","supabase.png","swift.png","tableau.png","ts.png","vercel.png",
+  "aws.webp","bitbucket.png","confluence.png","css.png","docker.webp","fastapi.webp",
+  "figma.png","github.png","html.png","java.png","jira.png","mongo.png",
+  "mysql.png","nextjs.png","npm.png","postgre.png","powerbi.png","python.png",
+  "R.png","react.png","sqlite.png","supabase.png","swift.png","tableau.png",
+  "ts.png","vercel.png","vite.webp",
 ];
 
 const VOLUNTEERING = [
@@ -136,12 +124,12 @@ function useInView(options?: IntersectionObserverInit) {
 // ---------------------------------------------------------------------------
 
 function Divider() {
-  return <div className="border-t border-white/[0.06] my-0" />;
+  return <div className="border-t border-[var(--line)] my-0" />;
 }
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="text-[0.62rem] font-semibold tracking-[0.2em] uppercase text-white/30 mb-6 lg:mb-8">
+    <p className="text-[0.62rem] font-semibold tracking-[0.2em] uppercase text-[var(--ink-4)] mb-6 lg:mb-8">
       {children}
     </p>
   );
@@ -164,13 +152,13 @@ function Nav() {
     <header
       className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
       style={{
-        background: scrolled ? "rgba(5,5,5,0.7)" : "transparent",
+        background: scrolled ? "rgba(246,242,234,0.72)" : "transparent",
         backdropFilter: scrolled ? "blur(20px)" : "none",
-        borderBottom: scrolled ? "1px solid rgba(255,255,255,0.05)" : "1px solid transparent",
+        borderBottom: scrolled ? "1px solid rgba(20,17,14,0.08)" : "1px solid transparent",
       }}
     >
       <div className="mx-auto max-w-7xl px-6 lg:px-10 flex items-center justify-between h-14">
-        <span className="text-xs font-semibold tracking-widest uppercase text-white/30 select-none">
+        <span className="text-xs font-semibold tracking-widest uppercase text-[var(--ink-4)] select-none">
           FN
         </span>
         <nav className="hidden md:flex items-center gap-1">
@@ -179,7 +167,7 @@ function Nav() {
               key={item.href}
               href={item.href}
               {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-              className="px-3 py-1.5 text-[0.72rem] font-medium tracking-wide text-white/40 rounded-md transition-colors duration-200 hover:text-white hover:bg-white/[0.06]"
+              className="px-3 py-1.5 text-[0.72rem] font-medium tracking-wide text-[var(--ink-3)] rounded-md transition-colors duration-200 hover:text-[var(--ink)] hover:bg-[rgba(20,17,14,0.05)]"
             >
               {item.label}
             </a>
@@ -219,9 +207,9 @@ function Hero() {
         }}
       >
         <h1
-          className="hero-name font-extrabold text-white"
+          className="hero-name font-extrabold text-[var(--ink)]"
           style={{
-            textShadow: "0 0 120px rgba(129,140,248,0.15), 0 40px 80px rgba(0,0,0,0.6)",
+            textShadow: "0 0 100px rgba(122,90,40,0.10), 0 24px 60px rgba(20,17,14,0.12)",
           }}
         >
           {PROFILE.name}
@@ -241,9 +229,9 @@ function Hero() {
       </div>
 
       {/* scroll hint */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/20">
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-[var(--ink-5)]">
         <span className="text-[0.6rem] tracking-widest uppercase">Scroll</span>
-        <div className="w-px h-12 bg-gradient-to-b from-white/20 to-transparent" />
+        <div className="w-px h-12 bg-gradient-to-b from-[var(--ink-5)] to-transparent" />
       </div>
     </section>
   );
@@ -273,29 +261,22 @@ function ExperienceCard({
       }}
     >
       <a href={item.link} target="_blank" rel="noopener noreferrer" className="block">
-        <div className="flex gap-6 items-start mb-6">
+        <div className="flex gap-6 items-center">
           <img
             src={item.image}
-            alt={item.org}
+            alt={item.company}
             className="w-20 h-20 object-contain rounded-xl flex-shrink-0 opacity-95"
           />
           <div className="flex-1 min-w-0">
             <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
-              <h3 className="text-sm font-semibold text-white leading-snug">{item.title}</h3>
-              <span className="text-[0.65rem] text-white/30 font-mono whitespace-nowrap">{item.period}</span>
+              <h3 className="text-sm font-semibold text-[var(--ink)] leading-snug">{item.title}</h3>
+              <span className="text-[0.65rem] text-[var(--ink-4)] font-mono whitespace-nowrap">{item.period}</span>
             </div>
-            <p className="text-xs text-white/40 mt-0.5">{item.org}</p>
+            <p className="text-xs text-[var(--ink-3)] mt-0.5">{item.company}</p>
+            <p className="text-xs text-[var(--ink-4)] mt-0.5">{item.location}</p>
           </div>
         </div>
       </a>
-      <ul className="space-y-2.5">
-        {item.bullets.map((b) => (
-          <li key={b} className="flex gap-3 text-[0.78rem] text-white/55 leading-relaxed">
-            <span className="text-white/20 mt-0.5 flex-shrink-0 text-[0.6rem]">&#9632;</span>
-            {b}
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }
@@ -321,13 +302,13 @@ function EducationCard({ item }: { item: typeof EDUCATION[number] }) {
         />
         <div className="flex-1 min-w-0">
           <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
-            <h3 className="text-sm font-semibold text-white leading-snug">{item.title}</h3>
-            <span className="text-[0.65rem] text-white/30 font-mono whitespace-nowrap">{item.period}</span>
+            <h3 className="text-sm font-semibold text-[var(--ink)] leading-snug">{item.title}</h3>
+            <span className="text-[0.65rem] text-[var(--ink-4)] font-mono whitespace-nowrap">{item.period}</span>
           </div>
           {item.subtitle && (
-            <p className="text-xs text-white/40 mt-0.5">{item.subtitle}</p>
+            <p className="text-xs text-[var(--ink-3)] mt-0.5">{item.subtitle}</p>
           )}
-          <p className="text-xs text-white/30 mt-0.5">{item.org}</p>
+          <p className="text-xs text-[var(--ink-4)] mt-0.5">{item.org}</p>
         </div>
       </a>
     </div>
@@ -359,10 +340,10 @@ function VolunteerCard({ item, index }: { item: typeof VOLUNTEERING[number]; ind
         />
         <div className="flex-1 min-w-0">
           <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
-            <h3 className="text-sm font-semibold text-white leading-snug">{item.title}</h3>
-            <span className="text-[0.65rem] text-white/30 font-mono whitespace-nowrap">{item.period}</span>
+            <h3 className="text-sm font-semibold text-[var(--ink)] leading-snug">{item.title}</h3>
+            <span className="text-[0.65rem] text-[var(--ink-4)] font-mono whitespace-nowrap">{item.period}</span>
           </div>
-          <p className="text-xs text-white/40 mt-0.5">{item.org}</p>
+          <p className="text-xs text-[var(--ink-3)] mt-0.5">{item.org}</p>
         </div>
       </a>
     </div>
@@ -386,14 +367,14 @@ function CertCard({ item, index }: { item: typeof CERTIFICATIONS[number]; index:
         transitionDelay: `${index * 80}ms`,
       }}
     >
-      <h3 className="text-sm font-semibold text-white leading-snug mb-2">{item.title}</h3>
-      <p className="text-[0.65rem] text-white/30 font-mono">{item.meta}</p>
+      <h3 className="text-sm font-semibold text-[var(--ink)] leading-snug mb-2">{item.title}</h3>
+      <p className="text-[0.65rem] text-[var(--ink-4)] font-mono">{item.meta}</p>
     </div>
   );
 }
 
 // ---------------------------------------------------------------------------
-// Technologies marquee
+// Technologies grid
 // ---------------------------------------------------------------------------
 
 function Technologies() {
@@ -405,18 +386,19 @@ function Technologies() {
       className="transition-all duration-700"
       style={{ opacity: inView ? 1 : 0, transform: inView ? "translateY(0)" : "translateY(20px)" }}
     >
-      <div className="flex overflow-hidden py-4">
-        <div className="flex animate-marquee gap-10">
-          {[...LOGOS, ...LOGOS, ...LOGOS].map((logo, i) => (
-            <div key={i} className="flex-shrink-0">
-              <img
-                src={`/logos/${logo}`}
-                alt={logo.replace(".png", "")}
-                className="h-14 w-14 lg:h-16 lg:w-16 object-contain"
-              />
-            </div>
-          ))}
-        </div>
+      <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-8 gap-x-6 gap-y-9 place-items-center">
+        {LOGOS.map((logo) => {
+          const name = logo.replace(/\.(png|webp)$/, "");
+          return (
+            <img
+              key={logo}
+              src={`/logos/${logo}`}
+              alt={name}
+              title={name}
+              className="h-12 w-12 lg:h-14 lg:w-14 object-contain"
+            />
+          );
+        })}
       </div>
     </div>
   );
@@ -501,7 +483,7 @@ export default function Home() {
 
         <Divider />
         <footer className="py-14 flex justify-center">
-          <p className="text-[0.65rem] tracking-widest uppercase text-white/15">Faisal Naveed</p>
+          <p className="text-[0.65rem] tracking-widest uppercase text-[var(--ink-5)]">Faisal Naveed</p>
         </footer>
       </div>
     </div>

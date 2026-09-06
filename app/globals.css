@@ -1,11 +1,20 @@
 @import "tailwindcss";
 
+/* Palette matches app/opengraph-image.tsx so the share card and the site agree. */
 :root {
-  --accent: 129, 140, 248;
+  --accent: 122, 90, 40;
+
+  --bg: #f6f2ea;
+  --ink: #14110e;
+  --ink-2: #4a443d;
+  --ink-3: #6d665c;
+  --ink-4: #938b7f;
+  --ink-5: #b5ac9e;
+  --line: rgba(20, 17, 14, 0.09);
 }
 
 html {
-  background-color: #03030a;
+  background-color: var(--bg);
 }
 
 html,
@@ -15,7 +24,7 @@ body {
 
 body {
   background: transparent;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--ink);
   font-family: var(--font-jakarta), system-ui, sans-serif;
   font-size: 15px;
   font-weight: 400;
@@ -34,7 +43,7 @@ a {
 }
 
 ::selection {
-  background: rgba(129, 140, 248, 0.3);
+  background: rgba(var(--accent), 0.22);
 }
 
 /* ------------------------------------------------------------------ */
@@ -46,11 +55,13 @@ a {
   inset: 0;
   z-index: 0;
   overflow: hidden;
-  background: #03030a;
+  background: var(--bg);
   pointer-events: none;
 }
 
-/* Each blob is a large blurred circle animated along a unique path */
+/* Each blob is a large blurred circle animated along a unique path.
+   Tints stay pale so the page never darkens behind the technology
+   logos, several of which are solid black. */
 .mesh-blob {
   position: absolute;
   border-radius: 50%;
@@ -66,7 +77,7 @@ a {
   height: 75vmax;
   top: -20%;
   left: -15%;
-  background: radial-gradient(circle, #3b0764 0%, #1e1b4b 50%, transparent 80%);
+  background: radial-gradient(circle, #efe3cf 0%, #f1e8dc 50%, transparent 80%);
   opacity: 0.75;
   animation: drift1 18s ease-in-out infinite alternate;
 }
@@ -76,8 +87,8 @@ a {
   height: 60vmax;
   top: 10%;
   right: -10%;
-  background: radial-gradient(circle, #0f172a 0%, #0d9488 40%, transparent 75%);
-  opacity: 0.45;
+  background: radial-gradient(circle, #eef1ea 0%, #dceae4 40%, transparent 75%);
+  opacity: 0.6;
   animation: drift2 22s ease-in-out infinite alternate;
 }
 
@@ -86,8 +97,8 @@ a {
   height: 55vmax;
   bottom: -15%;
   left: 20%;
-  background: radial-gradient(circle, #1e1b4b 0%, #4338ca 45%, transparent 80%);
-  opacity: 0.5;
+  background: radial-gradient(circle, #efece1 0%, #e2e0ef 45%, transparent 80%);
+  opacity: 0.55;
   animation: drift3 26s ease-in-out infinite alternate;
 }
 
@@ -96,8 +107,8 @@ a {
   height: 40vmax;
   top: 40%;
   left: 45%;
-  background: radial-gradient(circle, #164e63 0%, #0891b2 50%, transparent 80%);
-  opacity: 0.3;
+  background: radial-gradient(circle, #eaf0f2 0%, #dbe8ef 50%, transparent 80%);
+  opacity: 0.45;
   animation: drift4 20s ease-in-out infinite alternate;
 }
 
@@ -106,8 +117,8 @@ a {
   height: 50vmax;
   bottom: 5%;
   right: 5%;
-  background: radial-gradient(circle, #4c1d95 0%, #7c3aed 40%, transparent 75%);
-  opacity: 0.35;
+  background: radial-gradient(circle, #f0e6ea 0%, #e8dcea 40%, transparent 75%);
+  opacity: 0.5;
   animation: drift5 24s ease-in-out infinite alternate;
 }
 
@@ -118,8 +129,8 @@ a {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
   background-repeat: repeat;
   background-size: 200px 200px;
-  opacity: 0.6;
-  mix-blend-mode: overlay;
+  opacity: 0.35;
+  mix-blend-mode: soft-light;
 }
 
 @keyframes drift1 {
@@ -175,16 +186,16 @@ a {
   font-weight: 500;
   letter-spacing: 0.13em;
   text-transform: uppercase;
-  border: 1px solid rgba(255, 255, 255, 0.13);
+  border: 1px solid rgba(20, 17, 14, 0.16);
   border-radius: 9999px;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--ink-3);
   transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
 .hero-cta:hover {
-  background: white;
-  color: black;
-  border-color: white;
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
 }
 
 /* ------------------------------------------------------------------ */
@@ -192,62 +203,34 @@ a {
 /* ------------------------------------------------------------------ */
 
 .card-base {
-  background: rgba(255, 255, 255, 0.03);
-  border-color: rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.5);
+  border-color: rgba(20, 17, 14, 0.08);
   transition: background 0.35s ease, border-color 0.35s ease, transform 0.3s ease, box-shadow 0.35s ease;
 }
 
 .card-base:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.13);
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(20, 17, 14, 0.14);
   transform: translateY(-2px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 20px 40px rgba(20, 17, 14, 0.10);
 }
 
 .card-multivrse:hover {
-  background: rgba(59, 130, 246, 0.07);
-  border-color: rgba(59, 130, 246, 0.3);
+  background: rgba(59, 130, 246, 0.08);
+  border-color: rgba(59, 130, 246, 0.35);
 }
 
 .card-aurm:hover {
-  background: rgba(139, 92, 246, 0.07);
-  border-color: rgba(139, 92, 246, 0.3);
+  background: rgba(139, 92, 246, 0.08);
+  border-color: rgba(139, 92, 246, 0.35);
 }
 
 .card-education:hover {
-  background: rgba(213, 83, 53, 0.08);
-  border-color: rgba(213, 83, 53, 0.35);
+  background: rgba(213, 83, 53, 0.09);
+  border-color: rgba(213, 83, 53, 0.4);
 }
 
-.card-marquis:hover {
-  background: rgba(234, 179, 8, 0.06);
-  border-color: rgba(234, 179, 8, 0.3);
-}
-
-/* ------------------------------------------------------------------ */
-/* Marquee                                                             */
-/* ------------------------------------------------------------------ */
-
-@keyframes marquee {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(calc(-100% / 3)); }
-}
-
-@keyframes marquee-reverse {
-  0%   { transform: translateX(calc(-100% / 3)); }
-  100% { transform: translateX(0); }
-}
-
-.animate-marquee {
-  animation: marquee 40s linear infinite;
-  display: flex;
-  width: fit-content;
-  will-change: transform;
-}
-
-.animate-marquee-reverse {
-  animation: marquee-reverse 50s linear infinite;
-  display: flex;
-  width: fit-content;
-  will-change: transform;
+.card-mudivu:hover {
+  background: rgba(20, 17, 14, 0.055);
+  border-color: rgba(20, 17, 14, 0.3);
 }
