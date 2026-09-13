@@ -32,10 +32,8 @@ export default function RootLayout({
 export const metadata: Metadata = {
   metadataBase: new URL(profile.siteUrl),
   title: profile.name,
-  description: profile.intro,
   openGraph: {
     title: profile.name,
-    description: profile.intro,
     url: profile.siteUrl,
     type: "website",
   },

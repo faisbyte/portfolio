@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import MeshBackground from "./components/MeshBackground";
-import { profile } from "@/data/content";
 
 // ---------------------------------------------------------------------------
 // Data
@@ -264,13 +263,8 @@ function Hero() {
         </h1>
       </div>
 
-      {/* intro */}
-      <p className="relative z-10 mt-7 max-w-xl text-sm sm:text-[0.95rem] leading-relaxed text-[var(--ink-2)]">
-        {profile.intro}
-      </p>
-
       {/* links row */}
-      <div className="relative z-10 mt-8 flex items-center gap-3 flex-wrap justify-center">
+      <div className="relative z-10 mt-10 flex items-center gap-3 flex-wrap justify-center">
         <a href={PROFILE.links.linkedin} target="_blank" rel="noopener noreferrer" className="hero-cta gap-2">
           <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 fill-current" aria-hidden><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5ZM.5 23.5h4V7.98h-4V23.5ZM8.5 7.98h3.83v2.12h.05c.53-1.01 1.82-2.12 3.75-2.12 4.01 0 4.75 2.64 4.75 6.08v9.44h-4v-8.37c0-2-.04-4.57-2.79-4.57-2.79 0-3.22 2.18-3.22 4.43v8.51h-4V7.98Z"/></svg>
           LinkedIn<ExternalHint />

@@ -36,17 +36,6 @@ export default async function OpenGraphImage() {
         <div style={{ marginTop: 40, fontSize: 60, color: "#14110e" }}>
           {profile.name}
         </div>
-        <div
-          style={{
-            marginTop: 30,
-            fontSize: 27,
-            lineHeight: 1.6,
-            color: "#4a443d",
-            maxWidth: 950,
-          }}
-        >
-          {profile.intro}
-        </div>
       </div>
     ),
     {
