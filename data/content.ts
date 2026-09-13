@@ -37,8 +37,7 @@ export type SkillGroup = { label: string; items: string };
 
 export const profile = {
   name: "Faisal Naveed",
-  intro:
-    "Final-year computer science student at the University of Sydney and co-founder of Mudivu, where I build multi-agent LLM systems and the backend infrastructure they run on.",
+
   location: "Based in Sydney.",
   email: "faisalnaveed1011@gmail.com",
   linkedin: "https://www.linkedin.com/in/faisal-naveed-32bb55288/",

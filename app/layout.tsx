@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, DM_Mono } from "next/font/google";
+import { profile } from "@/data/content";
 import "./globals.css";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -29,6 +30,15 @@ export default function RootLayout({
 }
 
 export const metadata: Metadata = {
+  metadataBase: new URL(profile.siteUrl),
+  title: profile.name,
+  description: profile.intro,
+  openGraph: {
+    title: profile.name,
+    description: profile.intro,
+    url: profile.siteUrl,
+    type: "website",
+  },
   icons: {
     icon: [
       { url: "/favicon.svg", type: "image/svg+xml" },

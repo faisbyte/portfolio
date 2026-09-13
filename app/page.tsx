@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import MeshBackground from "./components/MeshBackground";
+import { profile } from "@/data/content";
 
 // ---------------------------------------------------------------------------
 // Data
@@ -102,13 +103,16 @@ const NAV = [
 // Helpers
 // ---------------------------------------------------------------------------
 
-function useInView(options?: IntersectionObserverInit) {
-  const ref = useRef<HTMLDivElement>(null);
+const REDUCED_MOTION = "(prefers-reduced-motion: reduce)";
+
+function useInView<T extends HTMLElement = HTMLDivElement>(options?: IntersectionObserverInit) {
+  const ref = useRef<T>(null);
   const [inView, setInView] = useState(false);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    if (window.matchMedia(REDUCED_MOTION).matches) { setInView(true); return; }
     const obs = new IntersectionObserver(([e]) => {
       if (e.isIntersecting) { setInView(true); obs.disconnect(); }
     }, { threshold: 0.08, rootMargin: "0px 0px -60px 0px", ...options });
@@ -129,18 +133,38 @@ function Divider() {
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="text-[0.62rem] font-semibold tracking-[0.2em] uppercase text-[var(--ink-4)] mb-6 lg:mb-8">
+    <h2 className="text-[0.7rem] font-semibold tracking-[0.2em] uppercase text-[var(--ink-4)] mb-6 lg:mb-8">
       {children}
-    </p>
+    </h2>
   );
+}
+
+/* Screen-reader cue for links that leave the page. */
+function ExternalHint() {
+  return <span className="sr-only"> (opens in a new tab)</span>;
 }
 
 // ---------------------------------------------------------------------------
 // Nav
 // ---------------------------------------------------------------------------
 
+function NavLink({ item, onClick, className = "" }: { item: typeof NAV[number]; onClick?: () => void; className?: string }) {
+  return (
+    <a
+      href={item.href}
+      onClick={onClick}
+      {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+      className={`inline-flex items-center min-h-11 px-3 text-[0.72rem] font-medium tracking-wide text-[var(--ink-3)] rounded-md transition-colors duration-200 hover:text-[var(--ink)] hover:bg-[rgba(20,17,14,0.05)] ${className}`}
+    >
+      {item.label}
+      {item.external && <><span aria-hidden className="ml-1 text-[0.65rem]">&#8599;</span><ExternalHint /></>}
+    </a>
+  );
+}
+
 function Nav() {
   const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 40);
@@ -148,32 +172,55 @@ function Nav() {
     return () => window.removeEventListener("scroll", handler);
   }, []);
 
+  const frosted = scrolled || open;
+
   return (
     <header
       className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
       style={{
-        background: scrolled ? "rgba(246,242,234,0.72)" : "transparent",
-        backdropFilter: scrolled ? "blur(20px)" : "none",
-        borderBottom: scrolled ? "1px solid rgba(20,17,14,0.08)" : "1px solid transparent",
+        background: frosted ? "rgba(246,242,234,0.72)" : "transparent",
+        backdropFilter: frosted ? "blur(20px)" : "none",
+        borderBottom: frosted ? "1px solid rgba(20,17,14,0.08)" : "1px solid transparent",
       }}
     >
       <div className="mx-auto max-w-7xl px-6 lg:px-10 flex items-center justify-between h-14">
         <span className="text-xs font-semibold tracking-widest uppercase text-[var(--ink-4)] select-none">
           FN
         </span>
-        <nav className="hidden md:flex items-center gap-1">
-          {NAV.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-              className="px-3 py-1.5 text-[0.72rem] font-medium tracking-wide text-[var(--ink-3)] rounded-md transition-colors duration-200 hover:text-[var(--ink)] hover:bg-[rgba(20,17,14,0.05)]"
-            >
-              {item.label}
-            </a>
-          ))}
+
+        <nav aria-label="Sections" className="hidden md:flex items-center gap-1">
+          {NAV.map((item) => <NavLink key={item.href} item={item} />)}
         </nav>
+
+        {/* phone: 44pt toggle in place of the row */}
+        <button
+          type="button"
+          onClick={() => setOpen((o) => !o)}
+          aria-expanded={open}
+          aria-controls="mobile-nav"
+          aria-label={open ? "Close menu" : "Open menu"}
+          className="md:hidden inline-flex items-center justify-center w-11 h-11 -mr-2 rounded-md text-[var(--ink-3)] hover:text-[var(--ink)] hover:bg-[rgba(20,17,14,0.05)] transition-colors"
+        >
+          <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" aria-hidden>
+            {open
+              ? <path d="M6 6l12 12M18 6L6 18" />
+              : <path d="M4 7h16M4 12h16M4 17h16" />}
+          </svg>
+        </button>
       </div>
+
+      <nav
+        id="mobile-nav"
+        aria-label="Sections"
+        hidden={!open}
+        className="md:hidden border-t border-[var(--line)]"
+      >
+        <div className="mx-auto max-w-7xl px-4 py-2 flex flex-col">
+          {NAV.map((item) => (
+            <NavLink key={item.href} item={item} onClick={() => setOpen(false)} className="w-full" />
+          ))}
+        </div>
+      </nav>
     </header>
   );
 }
@@ -186,6 +233,7 @@ function Hero() {
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
+    if (window.matchMedia(REDUCED_MOTION).matches) return;
     const handler = (e: MouseEvent) => {
       setMouse({
         x: (e.clientX / window.innerWidth) * 2 - 1,
@@ -216,22 +264,27 @@ function Hero() {
         </h1>
       </div>
 
+      {/* intro */}
+      <p className="relative z-10 mt-7 max-w-xl text-sm sm:text-[0.95rem] leading-relaxed text-[var(--ink-2)]">
+        {profile.intro}
+      </p>
+
       {/* links row */}
-      <div className="relative z-10 mt-10 flex items-center gap-3 flex-wrap justify-center">
+      <div className="relative z-10 mt-8 flex items-center gap-3 flex-wrap justify-center">
         <a href={PROFILE.links.linkedin} target="_blank" rel="noopener noreferrer" className="hero-cta gap-2">
           <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 fill-current" aria-hidden><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5ZM.5 23.5h4V7.98h-4V23.5ZM8.5 7.98h3.83v2.12h.05c.53-1.01 1.82-2.12 3.75-2.12 4.01 0 4.75 2.64 4.75 6.08v9.44h-4v-8.37c0-2-.04-4.57-2.79-4.57-2.79 0-3.22 2.18-3.22 4.43v8.51h-4V7.98Z"/></svg>
-          LinkedIn
+          LinkedIn<ExternalHint />
         </a>
         <a href={PROFILE.links.resume} target="_blank" rel="noopener noreferrer" className="hero-cta gap-2">
           <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 fill-current" aria-hidden><path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7l-5-5Zm1 7V3.5L18.5 9H15ZM8 13h8v2H8v-2Zm0 4h8v2H8v-2Zm0-8h6v2H8V9Z"/></svg>
-          Resume
+          Resume<ExternalHint />
         </a>
       </div>
 
       {/* scroll hint */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-[var(--ink-5)]">
-        <span className="text-[0.6rem] tracking-widest uppercase">Scroll</span>
-        <div className="w-px h-12 bg-gradient-to-b from-[var(--ink-5)] to-transparent" />
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-[var(--ink-4)]">
+        <span className="text-[0.7rem] tracking-widest uppercase">Scroll</span>
+        <div className="w-px h-12 bg-gradient-to-b from-[var(--ink-4)] to-transparent" />
       </div>
     </section>
   );
@@ -248,19 +301,21 @@ function ExperienceCard({
   item: typeof EXPERIENCE[number];
   index: number;
 }) {
-  const { ref, inView } = useInView();
+  const { ref, inView } = useInView<HTMLAnchorElement>();
 
   return (
-    <div
+    <a
       ref={ref}
-      className={`card-base card-${item.brand} border rounded-2xl p-7 lg:p-9 transition-all duration-700`}
+      href={item.link}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`card-base card-link card-${item.brand} block border rounded-2xl p-7 lg:p-9 transition-all duration-700`}
       style={{
         opacity: inView ? 1 : 0,
         transform: inView ? "translateY(0)" : "translateY(20px)",
         transitionDelay: `${index * 80}ms`,
       }}
     >
-      <a href={item.link} target="_blank" rel="noopener noreferrer" className="block">
         <div className="flex gap-6 items-center">
           <img
             src={item.image}
@@ -270,14 +325,14 @@ function ExperienceCard({
           <div className="flex-1 min-w-0">
             <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
               <h3 className="text-sm font-semibold text-[var(--ink)] leading-snug">{item.title}</h3>
-              <span className="text-[0.65rem] text-[var(--ink-4)] font-mono whitespace-nowrap">{item.period}</span>
+              <span className="text-[0.7rem] text-[var(--ink-4)] font-mono whitespace-nowrap">{item.period}</span>
             </div>
             <p className="text-xs text-[var(--ink-3)] mt-0.5">{item.company}</p>
             <p className="text-xs text-[var(--ink-4)] mt-0.5">{item.location}</p>
           </div>
         </div>
-      </a>
-    </div>
+        <ExternalHint />
+    </a>
   );
 }
 
@@ -286,15 +341,17 @@ function ExperienceCard({
 // ---------------------------------------------------------------------------
 
 function EducationCard({ item }: { item: typeof EDUCATION[number] }) {
-  const { ref, inView } = useInView();
+  const { ref, inView } = useInView<HTMLAnchorElement>();
 
   return (
-    <div
+    <a
       ref={ref}
-      className={`card-base card-${item.brand} border rounded-2xl p-7 lg:p-9 transition-all duration-700`}
+      href={item.link}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`card-base card-link card-${item.brand} flex gap-6 items-start border rounded-2xl p-7 lg:p-9 transition-all duration-700`}
       style={{ opacity: inView ? 1 : 0, transform: inView ? "translateY(0)" : "translateY(20px)" }}
     >
-      <a href={item.link} target="_blank" rel="noopener noreferrer" className="flex gap-6 items-start">
         <img
           src={item.image}
           alt={item.org}
@@ -303,15 +360,15 @@ function EducationCard({ item }: { item: typeof EDUCATION[number] }) {
         <div className="flex-1 min-w-0">
           <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
             <h3 className="text-sm font-semibold text-[var(--ink)] leading-snug">{item.title}</h3>
-            <span className="text-[0.65rem] text-[var(--ink-4)] font-mono whitespace-nowrap">{item.period}</span>
+            <span className="text-[0.7rem] text-[var(--ink-4)] font-mono whitespace-nowrap">{item.period}</span>
           </div>
           {item.subtitle && (
             <p className="text-xs text-[var(--ink-3)] mt-0.5">{item.subtitle}</p>
           )}
           <p className="text-xs text-[var(--ink-4)] mt-0.5">{item.org}</p>
         </div>
-      </a>
-    </div>
+        <ExternalHint />
+    </a>
   );
 }
 
@@ -320,19 +377,21 @@ function EducationCard({ item }: { item: typeof EDUCATION[number] }) {
 // ---------------------------------------------------------------------------
 
 function VolunteerCard({ item, index }: { item: typeof VOLUNTEERING[number]; index: number }) {
-  const { ref, inView } = useInView();
+  const { ref, inView } = useInView<HTMLAnchorElement>();
 
   return (
-    <div
+    <a
       ref={ref}
-      className="card-base border rounded-2xl p-7 lg:p-9 transition-all duration-700"
+      href={item.link}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="card-base card-link flex gap-5 items-start border rounded-2xl p-7 lg:p-9 transition-all duration-700"
       style={{
         opacity: inView ? 1 : 0,
         transform: inView ? "translateY(0)" : "translateY(20px)",
         transitionDelay: `${index * 80}ms`,
       }}
     >
-      <a href={item.link} target="_blank" rel="noopener noreferrer" className="flex gap-5 items-start">
         <img
           src={item.image}
           alt={item.org}
@@ -341,12 +400,12 @@ function VolunteerCard({ item, index }: { item: typeof VOLUNTEERING[number]; ind
         <div className="flex-1 min-w-0">
           <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
             <h3 className="text-sm font-semibold text-[var(--ink)] leading-snug">{item.title}</h3>
-            <span className="text-[0.65rem] text-[var(--ink-4)] font-mono whitespace-nowrap">{item.period}</span>
+            <span className="text-[0.7rem] text-[var(--ink-4)] font-mono whitespace-nowrap">{item.period}</span>
           </div>
           <p className="text-xs text-[var(--ink-3)] mt-0.5">{item.org}</p>
         </div>
-      </a>
-    </div>
+        <ExternalHint />
+    </a>
   );
 }
 
@@ -368,7 +427,7 @@ function CertCard({ item, index }: { item: typeof CERTIFICATIONS[number]; index:
       }}
     >
       <h3 className="text-sm font-semibold text-[var(--ink)] leading-snug mb-2">{item.title}</h3>
-      <p className="text-[0.65rem] text-[var(--ink-4)] font-mono">{item.meta}</p>
+      <p className="text-[0.7rem] text-[var(--ink-4)] font-mono">{item.meta}</p>
     </div>
   );
 }
@@ -395,7 +454,7 @@ function Technologies() {
               src={`/logos/${logo}`}
               alt={name}
               title={name}
-              className="h-12 w-12 lg:h-14 lg:w-14 object-contain"
+              className="h-12 w-20 lg:h-14 lg:w-24 object-contain"
             />
           );
         })}
@@ -443,6 +502,7 @@ export default function Home() {
       <div className="relative z-10">
         <Nav />
 
+        <main>
         <Hero />
 
         <PageSection id="experience" label="Experience">
@@ -480,10 +540,11 @@ export default function Home() {
             ))}
           </div>
         </PageSection>
+        </main>
 
         <Divider />
         <footer className="py-14 flex justify-center">
-          <p className="text-[0.65rem] tracking-widest uppercase text-[var(--ink-5)]">Faisal Naveed</p>
+          <p className="text-[0.7rem] tracking-widest uppercase text-[var(--ink-4)]">Faisal Naveed</p>
         </footer>
       </div>
     </div>
