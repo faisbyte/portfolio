@@ -58,6 +58,16 @@ const EXPERIENCE = [
   },
 ];
 
+const PROJECTS = [
+  {
+    title: "Thesis Citation Verifier",
+    description:
+      "Web tool that checks whether a sentence citing a research paper is actually supported by that paper, returning relevant / partially relevant / irrelevant with the exact supporting or contradicting quote.",
+    stack: "TypeScript, Next.js, SQLite (FTS5/BM25), local embeddings (bge-small), Claude API",
+    link: "https://github.com/faisbyte/thesis-agent",
+  },
+];
+
 const CERTIFICATIONS = [
   { title: "Google Advanced Data Analytics Professional Certificate", meta: "ID: IEWYXOK2W89R" },
   { title: "Google Machine Learning Professional Certificate", meta: "ID: PY6P4N95AU86" },
@@ -93,6 +103,7 @@ const NAV = [
   { label: "Experience",     href: "#experience" },
   { label: "Education",      href: "#education" },
   { label: "Technologies",   href: "#technologies" },
+  { label: "Projects",       href: "#projects" },
   { label: "Certifications", href: "#certifications" },
   { label: "Volunteering",   href: "#volunteering" },
   { label: "Resume",         href: "/resume.pdf", external: true },
@@ -407,6 +418,33 @@ function VolunteerCard({ item, index }: { item: typeof VOLUNTEERING[number]; ind
 // Certifications
 // ---------------------------------------------------------------------------
 
+function ProjectCard({ item, index }: { item: typeof PROJECTS[number]; index: number }) {
+  const { ref, inView } = useInView<HTMLAnchorElement>();
+
+  return (
+    <a
+      ref={ref}
+      href={item.link}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="card-base card-link block border rounded-2xl p-7 lg:p-9 transition-all duration-700"
+      style={{
+        opacity: inView ? 1 : 0,
+        transform: inView ? "translateY(0)" : "translateY(20px)",
+        transitionDelay: `${index * 80}ms`,
+      }}
+    >
+      <h3 className="text-sm font-semibold text-[var(--ink)] leading-snug">
+        {item.title}
+        <span aria-hidden className="ml-1.5 text-[var(--ink-4)]">&#8599;</span>
+      </h3>
+      <p className="text-xs text-[var(--ink-3)] mt-2 leading-relaxed">{item.description}</p>
+      <p className="text-[0.7rem] text-[var(--ink-4)] font-mono mt-3">{item.stack}</p>
+      <ExternalHint />
+    </a>
+  );
+}
+
 function CertCard({ item, index }: { item: typeof CERTIFICATIONS[number]; index: number }) {
   const { ref, inView } = useInView();
 
@@ -517,6 +555,14 @@ export default function Home() {
 
         <PageSection id="technologies" label="Technologies">
           <Technologies />
+        </PageSection>
+
+        <PageSection id="projects" label="Projects">
+          <div className="space-y-5">
+            {PROJECTS.map((item, i) => (
+              <ProjectCard key={item.title} item={item} index={i} />
+            ))}
+          </div>
         </PageSection>
 
         <PageSection id="certifications" label="Certifications">
